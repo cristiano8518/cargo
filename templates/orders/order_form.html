@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'create' %}Жаңа тапсырыс{% else %}Тапсырысты өңдеу{% endif %}{% endblock %}
+{% block content %}
+  <h2 class="mb-3">{% if mode == 'create' %}Жаңа тапсырыс{% else %}Тапсырысты өңдеу{% endif %}</h2>
+
+  <form method="post" class="card card-body">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Сақтау</button>
+      <a class="btn btn-outline-secondary" href="{% url 'orders:list' %}">Болдырмау</a>
+      {% if mode == 'update' %}
+        <a class="btn btn-outline-danger ms-auto" href="{% url 'orders:delete' order.id %}">Өшіру</a>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}
+

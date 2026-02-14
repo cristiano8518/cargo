@@ -1,0 +1,14 @@
+from django.urls import path
+from . import views
+
+app_name = "orders"
+
+urlpatterns = [
+    path("", views.order_list, name="list"),
+    path("admin/", views.admin_order_list, name="admin_list"),
+    path("admin/<int:pk>/status/", views.admin_order_set_status, name="admin_set_status"),
+    path("new/", views.order_create, name="create"),
+    path("<int:pk>/", views.order_detail, name="detail"),
+    path("<int:pk>/edit/", views.order_update, name="update"),
+    path("<int:pk>/delete/", views.order_delete, name="delete"),
+]

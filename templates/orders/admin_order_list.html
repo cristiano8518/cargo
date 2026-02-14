@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Admin — Тапсырыстар{% endblock %}
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Admin: барлық тапсырыстар</h2>
+    <a class="btn btn-outline-secondary" href="/admin/orders/order/">Django Admin</a>
+  </div>
+
+  <form class="card card-body mb-3" method="get">
+    <div class="row g-2">
+      <div class="col-12 col-md-5">
+        <input class="form-control" name="q" value="{{ q }}" placeholder="Іздеу: user / сипаттама / маршрут" />
+      </div>
+      <div class="col-12 col-md-3">
+        <select class="form-select" name="status">
+          <option value="">Статус (бәрі)</option>
+          {% for value,label in status_options %}
+            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-3">
+        <select class="form-select" name="sort">
+          {% for value,label in sort_options.items %}
+            <option value="{{ value }}" {% if sort == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-1 d-grid">
+        <button class="btn btn-outline-secondary" type="submit">OK</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User</th>
+          <th>Маршрут</th>
+          <th>Жүк</th>
+          <th>Салмақ</th>
+          <th>Баға</th>
+          <th>Статус</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in page_obj.object_list %}
+          <tr>
+            <td>{{ o.id }}</td>
+            <td>{{ o.user.username }}</td>
+            <td>{{ o.origin }} → {{ o.destination }}</td>
+            <td>{{ o.cargo_type|default:"-" }}</td>
+            <td>{% if o.weight_kg %}{{ o.weight_kg }} кг{% else %}-{% endif %}</td>
+            <td>{{ o.estimated_price }}</td>
+            <td>
+              <form class="d-flex gap-2" method="post" action="{% url 'orders:admin_set_status' o.id %}">
+                {% csrf_token %}
+                <select class="form-select form-select-sm" name="status">
+                  {% for value,label in status_options %}
+                    <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+                <button class="btn btn-sm btn-outline-primary" type="submit">Сақтау</button>
+              </form>
+            </td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-secondary" href="{% url 'orders:detail' o.id %}">Көру</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8" class="text-muted">Тапсырыс жоқ.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <nav aria-label="Pagination">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?q={{ q }}&status={{ status }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Алдыңғы</span></li>
+      {% endif %}
+      <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+      {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?q={{ q }}&status={{ status }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Келесі</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endblock %}
+

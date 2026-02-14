@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+  <h2>Профиль</h2>
+  <div class="card card-body">
+    <p class="mb-1"><strong>Логин:</strong> {{ user.username }}</p>
+    <p class="mb-1"><strong>Email:</strong> {{ user.email|default:"-" }}</p>
+    <p class="mb-1"><strong>Телефон:</strong> {{ user.phone|default:"-" }}</p>
+    <p class="mb-0"><strong>Рөл:</strong> {{ user.get_role_display }}</p>
+  </div>
+{% endblock %}
+

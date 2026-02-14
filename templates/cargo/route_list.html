@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Маршруттар{% endblock %}
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Маршруттар</h2>
+    <a class="btn btn-outline-secondary" href="/admin/cargo/route/">Админда басқару</a>
+  </div>
+
+  <form class="input-group mb-3" method="get">
+    <input class="form-control" name="q" value="{{ q }}" placeholder="Іздеу (шығу/келу)" />
+    <button class="btn btn-outline-secondary" type="submit">Іздеу</button>
+  </form>
+
+  {% if page_obj.object_list %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Шыққан жер</th>
+            <th>Келу жер</th>
+            <th>Қашықтық</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in page_obj.object_list %}
+            <tr>
+              <td>{{ r.origin }}</td>
+              <td>{{ r.destination }}</td>
+              <td>{% if r.distance_km %}{{ r.distance_km }} км{% else %}-{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <nav aria-label="Pagination">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Алдыңғы</span></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Келесі</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% else %}
+    <div class="alert alert-info">Маршрут табылмады. Админ панельден қосып көріңіз.</div>
+  {% endif %}
+{% endblock %}
+

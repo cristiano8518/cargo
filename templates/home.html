@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Басты бет — Карго{% endblock %}
+{% block content %}
+  <div class="p-4 p-md-5 mb-4 rounded text-bg-light border">
+    <div class="col-lg-8 px-0">
+      <h1 class="display-6">Карго жеткізу (Байерлік қызмет)</h1>
+      <p class="lead my-3">
+        Тапсырыс беріңіз, статусын бақылаңыз, баға мен маршруттарды қараңыз.
+      </p>
+      <p class="lead mb-0">
+        {% if user.is_authenticated %}
+          <a href="/orders/" class="btn btn-primary">Тапсырыстарға өту</a>
+        {% else %}
+          <a href="{% url 'users:signup' %}" class="btn btn-primary">Тіркелу</a>
+          <a href="{% url 'login' %}" class="btn btn-outline-primary">Кіру</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+{% endblock %}
+

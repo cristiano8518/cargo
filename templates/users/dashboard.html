@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load users_extras %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Dashboard</h2>
+    <div class="d-flex gap-2">
+      <a class="btn btn-primary" href="{% url 'orders:create' %}">+ Жаңа тапсырыс</a>
+      <a class="btn btn-outline-secondary" href="{% url 'orders:list' %}">Барлық тапсырыстар</a>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-4">
+      <div class="card card-body">
+        <div class="text-muted">Тапсырыстар саны</div>
+        <div class="fs-3 fw-semibold">{{ total_orders }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card card-body">
+        <div class="text-muted">Есептелген жалпы баға</div>
+        <div class="fs-3 fw-semibold">{{ total_estimated }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card card-body">
+        <div class="text-muted">Статус бойынша</div>
+        <div class="small">
+          {% for value,label in status_choices %}
+            <div class="d-flex justify-content-between">
+              <span>{{ label }}</span>
+              <span class="fw-semibold">{{ by_status|get_item:value|default:0 }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="mb-2">Соңғы тапсырыстар</h5>
+  {% if last_orders %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Маршрут</th>
+            <th>Жүк</th>
+            <th>Баға</th>
+            <th>Статус</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in last_orders %}
+            <tr>
+              <td>{{ o.id }}</td>
+              <td>{{ o.origin }} → {{ o.destination }}</td>
+              <td>{{ o.cargo_type|default:"-" }}</td>
+              <td>{{ o.estimated_price }}</td>
+              <td><span class="badge text-bg-secondary">{{ o.get_status_display }}</span></td>
+              <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{% url 'orders:detail' o.id %}">Көру</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">Әзірге тапсырыс жоқ.</div>
+  {% endif %}
+{% endblock %}
+
