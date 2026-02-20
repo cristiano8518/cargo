@@ -5,16 +5,25 @@ from django.conf import settings
 class Order(models.Model):
     """Тапсырыс — карго жеткізу."""
     class Status(models.TextChoices):
-        NEW = 'new', 'Жаңа'
-        CONFIRMED = 'confirmed', 'Расталды'
-        IN_TRANSIT = 'in_transit', 'Жолда'
-        DELIVERED = 'delivered', 'Жеткізілді'
-        CANCELLED = 'cancelled', 'Бас тартылды'
+        PENDING = "pending", "Сұраныс жіберілді"
+        ACCEPTED = "accepted", "Қабылданды"
+        REJECTED = "rejected", "Қабылданбады"
+        PAYMENT_PENDING = "payment_pending", "Төлем күтілуде"
+        PAID = "paid", "Төленді"
+        IN_TRANSIT = "in_transit", "Жолда"
+        DELIVERED = "delivered", "Жеткізілді"
+        CANCELLED = "cancelled", "Бас тартылды"
+
+    class VehicleType(models.TextChoices):
+        GAZEL = "gazel", "Газель"
+        KAMAZ = "kamaz", "Камаз"
+        TRAL = "tral", "Трал"
+        OTHER = "other", "Басқа"
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='orders'
+        related_name="orders",
     )
     cargo_type = models.ForeignKey(
         "cargo.CargoType",
@@ -24,6 +33,14 @@ class Order(models.Model):
         related_name="orders",
         verbose_name="Жүк түрі",
     )
+    route = models.ForeignKey(
+        "cargo.Route",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="orders",
+        verbose_name="Маршрут",
+    )
     weight_kg = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -31,19 +48,34 @@ class Order(models.Model):
         blank=True,
         verbose_name="Салмақ (кг)",
     )
+    vehicle_type = models.CharField(
+        max_length=20,
+        choices=VehicleType.choices,
+        default=VehicleType.GAZEL,
+        verbose_name="Көлік түрі",
+    )
     estimated_price = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
         verbose_name="Есептелген баға",
     )
-    description = models.CharField(max_length=500)
-    origin = models.CharField(max_length=200)
-    destination = models.CharField(max_length=200)
+    description = models.CharField(max_length=500, blank=True, verbose_name="Сипаттама (авто)")
+    origin = models.CharField(max_length=200, blank=True, verbose_name="Қайдан")
+    destination = models.CharField(max_length=200, blank=True, verbose_name="Қайда")
+    requested_delivery_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Жеткізу күні",
+    )
+    rejection_reason = models.TextField(
+        blank=True,
+        verbose_name="Қабылдамау себебі",
+    )
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
-        default=Status.NEW
+        default=Status.PENDING,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

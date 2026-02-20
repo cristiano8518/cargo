@@ -1,0 +1,174 @@
+/* ===== Django Admin — Карго тақырыбы ===== */
+
+:root {
+  --admin-primary: #1a1d29;
+  --admin-primary-light: #2d3142;
+  --admin-accent: #0d6efd;
+  --admin-radius: 0.5rem;
+}
+
+/* Заголовок */
+#header {
+  background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%) !important;
+  color: #fff !important;
+  padding: 12px 20px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+#branding h1 {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+}
+
+#branding h1 a {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+#branding h1 a:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Ссылки в шапке */
+#user-tools {
+  font-size: 0.9rem !important;
+  padding-top: 4px !important;
+}
+
+#user-tools a {
+  color: rgba(255, 255, 255, 0.95) !important;
+  border-radius: 4px;
+  padding: 4px 8px;
+  transition: background 0.2s;
+}
+
+#user-tools a:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+/* Контент */
+#content {
+  padding: 20px !important;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+#content h1 {
+  color: #1a1d29 !important;
+  font-weight: 700 !important;
+  margin-bottom: 20px !important;
+  font-size: 1.5rem !important;
+}
+
+/* Модули (блоки на главной админки) */
+.module h2,
+.module caption {
+  background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%) !important;
+  color: #fff !important;
+  padding: 10px 15px !important;
+  border-radius: var(--admin-radius) var(--admin-radius) 0 0 !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+}
+
+.module table {
+  border-radius: 0 0 var(--admin-radius) var(--admin-radius) !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.module table th {
+  background: #f8f9fa !important;
+  font-weight: 600 !important;
+  padding: 10px 12px !important;
+}
+
+.module table td {
+  padding: 10px 12px !important;
+}
+
+.module table tr:nth-child(even) {
+  background: #f8f9fc !important;
+}
+
+.module table tr:hover td {
+  background: #eef1f6 !important;
+}
+
+/* Кнопки и ссылки в модулях */
+.module ul.actionlist li a {
+  color: var(--admin-accent) !important;
+  font-weight: 500 !important;
+}
+
+.module ul.actionlist li a:hover {
+  text-decoration: underline !important;
+}
+
+/* Кнопки добавления */
+.addlink,
+.add-row a {
+  color: #198754 !important;
+  font-weight: 600 !important;
+}
+
+.addlink:hover,
+.add-row a:hover {
+  color: #157347 !important;
+}
+
+/* Формы в админке */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+  border-radius: 4px !important;
+  border: 1px solid #dee2e6 !important;
+  padding: 6px 10px !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--admin-accent) !important;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.2) !important;
+  outline: none !important;
+}
+
+/* Кнопка Submit */
+.submit-row {
+  padding: 15px !important;
+  background: #f8f9fc !important;
+  border-radius: var(--admin-radius) !important;
+  margin-top: 20px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+.submit-row input[type="submit"] {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+.submit-row input[type="submit"]:hover {
+  opacity: 0.95 !important;
+}
+
+/* Панель "Recent actions" */
+#recent-actions-module h2 {
+  border-radius: var(--admin-radius) var(--admin-radius) 0 0 !important;
+}
+
+#branding h1 .bi {
+  margin-right: 8px;
+  vertical-align: -0.2em;
+}

@@ -5,7 +5,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import OrderForm
+from cargo.models import Route
+from .forms import OrderForm, OrderAdminUpdateForm
 from .models import Order
 from users.permissions import is_admin_user
 
@@ -19,7 +20,7 @@ ALLOWED_SORTS = {
 
 @login_required
 def order_list(request):
-    qs = Order.objects.filter(user=request.user)
+    qs = Order.objects.filter(user=request.user).select_related("route", "cargo_type")
 
     q = (request.GET.get("q") or "").strip()
     if q:
@@ -57,7 +58,7 @@ def order_list(request):
 
 @login_required
 def order_detail(request, pk: int):
-    order = get_object_or_404(Order, pk=pk, user=request.user)
+    order = get_object_or_404(Order.objects.select_related("route", "cargo_type"), pk=pk, user=request.user)
     return render(request, "orders/order_detail.html", {"order": order})
 
 
@@ -68,21 +69,44 @@ def order_create(request):
         if form.is_valid():
             order: Order = form.save(commit=False)
             order.user = request.user
+            order.status = Order.Status.PENDING
+            if order.cargo_type:
+                order.description = order.cargo_type.name
+            if order.route:
+                order.origin = order.route.origin
+                order.destination = order.route.destination
             order.save()
-            messages.success(request, "Тапсырыс құрылды.")
+            messages.success(request, "Сұраныс жіберілді. Әкімші тексергенше күтіңіз.")
             return redirect("orders:detail", pk=order.pk)
     else:
-        form = OrderForm()
+        initial = {}
+        route_id = request.GET.get("route")
+        if route_id:
+            try:
+                route = Route.objects.get(pk=route_id)
+                initial["route"] = route
+            except (Route.DoesNotExist, ValueError):
+                pass
+        form = OrderForm(initial=initial)
     return render(request, "orders/order_form.html", {"form": form, "mode": "create"})
 
 
 @login_required
 def order_update(request, pk: int):
     order = get_object_or_404(Order, pk=pk, user=request.user)
+    if order.status != Order.Status.PENDING:
+        messages.info(request, "Тек «Сұраныс жіберілді» кезінде өңдеуге болады.")
+        return redirect("orders:detail", pk=order.pk)
     if request.method == "POST":
         form = OrderForm(request.POST, instance=order)
         if form.is_valid():
-            form.save()
+            order = form.save(commit=False)
+            if order.cargo_type:
+                order.description = order.cargo_type.name
+            if order.route:
+                order.origin = order.route.origin
+                order.destination = order.route.destination
+            order.save()
             messages.success(request, "Тапсырыс жаңартылды.")
             return redirect("orders:detail", pk=order.pk)
     else:
@@ -100,9 +124,26 @@ def order_delete(request, pk: int):
     return render(request, "orders/order_confirm_delete.html", {"order": order})
 
 
+@login_required
+def order_confirm_payment(request, pk: int):
+    """Пайдаланушы «Төлем жасау» басқанда: Төленді → Жолда."""
+    order = get_object_or_404(Order, pk=pk, user=request.user)
+    if order.status != Order.Status.PAYMENT_PENDING:
+        messages.info(request, "Төлем тек «Төлем күтілуде» тапсырыстар үшін.")
+        return redirect("orders:detail", pk=pk)
+    if request.method == "POST":
+        order.status = Order.Status.PAID
+        order.save(update_fields=["status", "updated_at"])
+        order.status = Order.Status.IN_TRANSIT
+        order.save(update_fields=["status", "updated_at"])
+        messages.success(request, "Төлем жасалды. Тапсырыс жолда.")
+        return redirect("orders:detail", pk=pk)
+    return redirect("orders:detail", pk=pk)
+
+
 @user_passes_test(is_admin_user)
 def admin_order_list(request):
-    qs = Order.objects.select_related("user", "cargo_type").all()
+    qs = Order.objects.select_related("user", "cargo_type", "route").all()
 
     q = (request.GET.get("q") or "").strip()
     if q:
@@ -152,3 +193,41 @@ def admin_order_set_status(request, pk: int):
         else:
             messages.error(request, "Қате статус.")
     return redirect("orders:admin_list")
+
+
+@user_passes_test(is_admin_user)
+def admin_order_decision(request, pk: int):
+    """Әкімші: қабылдау немесе қабылдамау — екі батырма, қабылданса төлем күтілуде."""
+    order = get_object_or_404(Order, pk=pk)
+    if request.method == "POST":
+        if request.POST.get("accept"):
+            # Қабылдау — бағаны қойып, төлем күтілуде етіп жібереміз (пайдаланушыға оплата келеді)
+            price = request.POST.get("estimated_price")
+            try:
+                order.estimated_price = float(price or 0)
+            except (TypeError, ValueError):
+                order.estimated_price = 0
+            order.status = Order.Status.PAYMENT_PENDING
+            order.rejection_reason = ""
+            order.save()
+            messages.success(request, "Сұраныс қабылданды. Пайдаланушыға төлем жіберілді.")
+            return redirect("orders:admin_list")
+        if request.POST.get("reject"):
+            reason = (request.POST.get("rejection_reason") or "").strip()
+            if not reason:
+                messages.error(request, "Қабылдамау себебін жазыңыз.")
+                return render(
+                    request,
+                    "orders/admin_order_decision.html",
+                    {"order": order, "rejection_reason": reason},
+                )
+            order.status = Order.Status.REJECTED
+            order.rejection_reason = reason
+            order.save()
+            messages.success(request, "Сұраныс қабылданбады.")
+            return redirect("orders:admin_list")
+    return render(
+        request,
+        "orders/admin_order_decision.html",
+        {"order": order},
+    )

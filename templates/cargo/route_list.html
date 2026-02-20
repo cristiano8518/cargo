@@ -1,14 +1,28 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Маршруттар{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
 {% block content %}
-  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Маршруттар</h2>
-    <a class="btn btn-outline-secondary" href="/admin/cargo/route/">Админда басқару</a>
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-geo-alt text-primary"></i> Маршруттар</h2>
+    <a class="btn btn-outline-primary" href="/admin/cargo/route/"><i class="bi bi-gear"></i> Админда басқару</a>
   </div>
 
-  <form class="input-group mb-3" method="get">
+  <div class="card card-body mb-4">
+    <h5 class="mb-2"><i class="bi bi-map"></i> Картада жол көрсету</h5>
+    <p class="text-muted small mb-2">Төмендегі кестеден маршрутты таңдап «Картада көрсету» батырмасын басыңыз — жол картада көрсетіледі.</p>
+    <div id="route-map" style="height: 360px; border-radius: 8px; background: #e9ecef;"></div>
+    <div id="route-map-caption" class="mt-2 text-muted small"></div>
+    <div id="route-map-add-order" class="mt-2 d-none">
+      <a id="route-map-add-order-btn" href="#" class="btn btn-success"><i class="bi bi-plus-lg"></i> Жаңа тапсырысқа қосу</a>
+    </div>
+  </div>
+
+  <form class="input-group mb-3 card card-body" method="get">
     <input class="form-control" name="q" value="{{ q }}" placeholder="Іздеу (шығу/келу)" />
-    <button class="btn btn-outline-secondary" type="submit">Іздеу</button>
+    <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i> Іздеу</button>
   </form>
 
   {% if page_obj.object_list %}
@@ -19,14 +33,24 @@
             <th>Шыққан жер</th>
             <th>Келу жер</th>
             <th>Қашықтық</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {% for r in page_obj.object_list %}
             <tr>
-              <td>{{ r.origin }}</td>
-              <td>{{ r.destination }}</td>
-              <td>{% if r.distance_km %}{{ r.distance_km }} км{% else %}-{% endif %}</td>
+              <td><i class="bi bi-geo text-muted"></i> {{ r.origin }}</td>
+              <td><i class="bi bi-geo-alt text-muted"></i> {{ r.destination }}</td>
+              <td>{% if r.distance_km %}<i class="bi bi-signpost-2"></i> {{ r.distance_km }} км{% else %}-{% endif %}</td>
+              <td>
+                {% if r.origin_lat and r.destination_lat %}
+                  <button type="button" class="btn btn-sm btn-outline-primary route-show-map" data-route-id="{{ r.id }}" data-origin="{{ r.origin }}" data-destination="{{ r.destination }}">
+                    <i class="bi bi-map"></i> Картада көрсету
+                  </button>
+                {% else %}
+                  <span class="text-muted small">—</span>
+                {% endif %}
+              </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -51,5 +75,68 @@
   {% else %}
     <div class="alert alert-info">Маршрут табылмады. Админ панельден қосып көріңіз.</div>
   {% endif %}
+{% endblock %}
+{% block extra_js %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function() {
+      var mapEl = document.getElementById('route-map');
+      if (!mapEl) return;
+      var map = L.map('route-map').setView([43.2, 74.0], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
+      var captionEl = document.getElementById('route-map-caption');
+      var currentLayer = null;
+
+      var addOrderWrap = document.getElementById('route-map-add-order');
+      var addOrderBtn = document.getElementById('route-map-add-order-btn');
+
+      function clearRoute() {
+        if (currentLayer) {
+          map.removeLayer(currentLayer);
+          currentLayer = null;
+        }
+        captionEl.textContent = 'Маршрутты таңдаңыз.';
+        if (addOrderWrap) addOrderWrap.classList.add('d-none');
+      }
+
+      function showRoute(data) {
+        if (currentLayer) map.removeLayer(currentLayer);
+        var polyline = L.polyline(data.polyline, { color: '#0d6efd', weight: 4 });
+        var start = L.marker(data.origin).bindPopup(data.origin_name || 'Шығу');
+        var end = L.marker(data.destination).bindPopup(data.destination_name || 'Келу');
+        currentLayer = L.layerGroup([polyline, start, end]).addTo(map);
+        map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+        captionEl.textContent = (data.origin_name + ' → ' + data.destination_name) + (data.distance_km ? ' • ' + data.distance_km + ' км' : '');
+        if (addOrderWrap && addOrderBtn && data.route_id) {
+          addOrderBtn.href = '/orders/new/?route=' + data.route_id;
+          addOrderWrap.classList.remove('d-none');
+        }
+      }
+
+      clearRoute();
+
+      document.querySelectorAll('.route-show-map').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = this.getAttribute('data-route-id');
+          var url = '/cargo/routes/' + id + '/map/';
+          btn.disabled = true;
+          fetch(url)
+            .then(function(r) {
+              if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || 'Қате'); });
+              return r.json();
+            })
+            .then(function(data) {
+              showRoute(data);
+            })
+            .catch(function(err) {
+              captionEl.textContent = err.message || 'Жол жүктелу қатесі.';
+            })
+            .finally(function() { btn.disabled = false; });
+        });
+      });
+    })();
+  </script>
 {% endblock %}
 
