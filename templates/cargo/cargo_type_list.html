@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Жүк түрлері{% endblock %}
 {% block content %}
-  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Жүк түрлері</h2>
-    <a class="btn btn-outline-secondary" href="/admin/cargo/cargotype/">Админда басқару</a>
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-list-ul text-primary"></i> Жүк түрлері</h2>
+    <a class="btn btn-outline-primary" href="/admin/cargo/cargotype/"><i class="bi bi-gear"></i> Админда басқару</a>
   </div>
 
-  <form class="input-group mb-3" method="get">
+  <form class="input-group mb-3 card card-body" method="get">
     <input class="form-control" name="q" value="{{ q }}" placeholder="Іздеу (атауы/сипаттама)" />
-    <button class="btn btn-outline-secondary" type="submit">Іздеу</button>
+    <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i> Іздеу</button>
   </form>
 
   {% if page_obj.object_list %}
@@ -19,7 +19,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ ct.name }}</h5>
               <p class="card-text text-muted mb-2">{{ ct.description|default:"-" }}</p>
-              <div class="fw-semibold">Баға: {{ ct.price_per_kg }} / кг</div>
+              <div class="fw-semibold"><i class="bi bi-currency-exchange text-success"></i> {{ ct.price_per_kg }} тг / кг</div>
             </div>
           </div>
         </div>
