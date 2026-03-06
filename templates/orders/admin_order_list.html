@@ -67,13 +67,17 @@
               {% if o.status == 'pending' %}
                 <a class="btn btn-sm btn-warning" href="{% url 'orders:admin_decision' o.id %}">Қабылдау/Қабылдамау</a>
               {% else %}
-                <form class="d-inline" method="post" action="{% url 'orders:admin_set_status' o.id %}">
+                <form class="d-inline admin-status-form" method="post" action="{% url 'orders:admin_set_status' o.id %}" enctype="multipart/form-data" data-order-id="{{ o.id }}">
                   {% csrf_token %}
-                  <select class="form-select form-select-sm d-inline-block w-auto" name="status">
+                  <select class="form-select form-select-sm d-inline-block w-auto admin-status-select" name="status">
                     {% for value,label in status_options %}
                       <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                   </select>
+                  <label class="btn btn-sm btn-outline-secondary ms-1 mb-0 d-none admin-photo-label">
+                    <i class="bi bi-image"></i> Фото
+                    <input type="file" name="delivery_photo" accept="image/*" class="d-none admin-photo-input">
+                  </label>
                   <button class="btn btn-sm btn-outline-primary" type="submit">OK</button>
                 </form>
               {% endif %}
@@ -176,6 +180,23 @@
           var modal = new bootstrap.Modal(modalEl);
           modal.show();
         });
+      });
+
+      document.querySelectorAll('.admin-status-form').forEach(function(form) {
+        var select = form.querySelector('.admin-status-select');
+        var label = form.querySelector('.admin-photo-label');
+        if (!select || !label) return;
+        function togglePhoto() {
+          if (select.value === 'delivered') {
+            label.classList.remove('d-none');
+          } else {
+            label.classList.add('d-none');
+            var inp = label.querySelector('.admin-photo-input');
+            if (inp) inp.value = '';
+          }
+        }
+        select.addEventListener('change', togglePhoto);
+        togglePhoto();
       });
     })();
   </script>

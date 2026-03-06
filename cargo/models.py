@@ -6,6 +6,7 @@ class CargoType(models.Model):
     class Category(models.TextChoices):
         MAL = "mal", "Мал"
         TOVAR = "tovar", "Тауарлар"
+        OTHER = "other", "Басқа"
 
     name = models.CharField(max_length=100)
     category = models.CharField(

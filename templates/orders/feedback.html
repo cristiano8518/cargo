@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Кері байланыс{% endblock %}
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-chat-left-text text-primary"></i> Кері байланыс</h2>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-5">
+      <div class="card card-body">
+        <h5 class="mb-3"><i class="bi bi-pen"></i> Пікір қалдыру</h5>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-2">
+            {{ form.order.label_tag }}
+            {{ form.order }}
+            {% if form.order.errors %}<div class="text-danger small">{{ form.order.errors }}</div>{% endif %}
+          </div>
+          <div class="mb-2">
+            {{ form.rating.label_tag }}
+            {{ form.rating }}
+            {% if form.rating.errors %}<div class="text-danger small">{{ form.rating.errors }}</div>{% endif %}
+          </div>
+          <div class="mb-2">
+            {{ form.text.label_tag }}
+            {{ form.text }}
+            {% if form.text.errors %}<div class="text-danger small">{{ form.text.errors }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            {{ form.photo.label_tag }}
+            {{ form.photo }}
+            {% if form.photo.errors %}<div class="text-danger small">{{ form.photo.errors }}</div>{% endif %}
+          </div>
+          {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+          <button class="btn btn-primary w-100" type="submit"><i class="bi bi-send"></i> Жіберу</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-12 col-lg-7">
+      <div class="card card-body mb-3">
+        <h5 class="mb-3"><i class="bi bi-list-stars"></i> Менің пікірлерім</h5>
+        {% if feedbacks %}
+          <ul class="list-unstyled mb-0">
+            {% for fb in feedbacks %}
+              <li class="mb-3 border rounded p-2 bg-light">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="text-warning">
+                    {% for i in "12345"|slice:":fb.rating" %}<i class="bi bi-star-fill"></i>{% endfor %}
+                  </div>
+                  <small class="text-muted">
+                    {% if fb.order %}Тапсырыс #{{ fb.order.id }} · {% endif %}
+                    {{ fb.created_at|date:"Y-m-d H:i" }}
+                  </small>
+                </div>
+                <p class="mb-1">{{ fb.text }}</p>
+                {% if fb.photo %}
+                  <img src="{{ fb.photo.url }}" alt="Feedback photo" class="img-fluid rounded mt-1" style="max-height: 140px;">
+                {% endif %}
+                {% if fb.admin_reply %}
+                  <div class="mt-2 small text-muted">
+                    <strong><i class="bi bi-reply"></i> Әкімші жауабы:</strong> {{ fb.admin_reply }}
+                  </div>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="text-muted small">Әзірге пікір жоқ.</div>
+        {% endif %}
+      </div>
+
+      <div class="card card-body">
+        <h5 class="mb-3"><i class="bi bi-people"></i> Барлық пайдаланушылардың пікірлері</h5>
+        {% if public_feedbacks %}
+          <ul class="list-unstyled mb-0">
+            {% for fb in public_feedbacks %}
+              <li class="mb-3 border rounded p-2 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div>
+                    <span class="fw-semibold"><i class="bi bi-person-circle"></i> {{ fb.user.username }}</span>
+                    <span class="ms-2 text-warning">
+                      {% for i in "12345"|slice:":fb.rating" %}<i class="bi bi-star-fill"></i>{% endfor %}
+                    </span>
+                  </div>
+                  <small class="text-muted">
+                    {% if fb.order %}#{{ fb.order.id }} · {% endif %}
+                    {{ fb.created_at|date:"Y-m-d" }}
+                  </small>
+                </div>
+                <p class="mb-1">{{ fb.text }}</p>
+                {% if fb.photo %}
+                  <img src="{{ fb.photo.url }}" alt="Feedback photo" class="img-fluid rounded mt-1" style="max-height: 120px;">
+                {% endif %}
+                {% if fb.admin_reply %}
+                  <div class="mt-2 small text-muted">
+                    <strong><i class="bi bi-reply"></i> Әкімші жауабы:</strong> {{ fb.admin_reply }}
+                  </div>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="text-muted small">Әзірге жария пікірлер жоқ.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

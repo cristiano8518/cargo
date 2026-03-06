@@ -27,7 +27,10 @@ def dashboard(request):
     by_status = {row["status"]: row["c"] for row in qs.values("status").annotate(c=Count("id"))}
     total_estimated = qs.aggregate(s=Sum("estimated_price")).get("s") or 0
     last_orders = qs.order_by("-created_at")[:5]
-    delivered = qs.filter(status=Order.Status.DELIVERED).order_by("-updated_at")[:5]
+    delivered = qs.filter(
+        status__in=[Order.Status.DELIVERED, Order.Status.REJECTED],
+        admin_seen=False,
+    ).order_by("-updated_at")[:5]
     payment_pending_orders = qs.filter(status=Order.Status.PAYMENT_PENDING).order_by("-created_at")
     return render(
         request,
