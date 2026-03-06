@@ -45,11 +45,55 @@
     <p class="mb-0 text-muted"><small>Құрылды: {{ order.created_at|date:"Y-m-d H:i" }}</small></p>
   </div>
 
+  {% if order.delivery_photo %}
+  <div class="card card-body mt-4">
+    <h5 class="mb-2"><i class="bi bi-image text-primary"></i> Жеткізу фотосы</h5>
+    <div class="row g-3 align-items-center">
+      <div class="col-12 col-md-6">
+        <img src="{{ order.delivery_photo.url }}" alt="Жеткізу фото #{{ order.id }}" class="img-fluid rounded shadow-sm">
+      </div>
+      <div class="col-12 col-md-6">
+        <p class="mb-1 text-muted small">Бұл фото әкімші тапсырысты «Жеткізілді» деп жаңартқан кезде тіркелді.</p>
+        <p class="mb-0"><span class="badge bg-light text-dark"><i class="bi bi-check-circle text-success"></i> Тауар жеткізілгенін растайтын фото</span></p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   {% if order.route and order.route.origin_lat %}
   <div class="card card-body mt-4">
     <h5 class="mb-2"><i class="bi bi-map text-primary"></i> Маршрут картада</h5>
     <div id="order-detail-map" style="height: 360px; border-radius: 8px;"></div>
     <p id="order-detail-map-caption" class="text-muted small mt-2 mb-0"></p>
+  </div>
+  {% endif %}
+
+  {% if feedbacks %}
+  <div class="card card-body mt-4">
+    <h5 class="mb-2"><i class="bi bi-chat-left-text text-primary"></i> Сіз қалдырған пікірлер</h5>
+    <ul class="list-unstyled mb-0">
+      {% for fb in feedbacks %}
+        <li class="mb-3 border rounded p-2 bg-light">
+          <div class="d-flex justify-content-between">
+            <div>
+              <span class="text-warning">
+                {% for i in "12345"|slice:":fb.rating" %}<i class="bi bi-star-fill"></i>{% endfor %}
+              </span>
+            </div>
+            <small class="text-muted">{{ fb.created_at|date:"Y-m-d H:i" }}</small>
+          </div>
+          <p class="mb-1 mt-1">{{ fb.text }}</p>
+          {% if fb.photo %}
+            <img src="{{ fb.photo.url }}" alt="Feedback photo" class="img-fluid rounded mt-1" style="max-height: 160px;">
+          {% endif %}
+          {% if fb.admin_reply %}
+            <div class="mt-2 small text-muted">
+              <strong><i class="bi bi-reply"></i> Әкімші жауабы:</strong> {{ fb.admin_reply }}
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
   </div>
   {% endif %}
 

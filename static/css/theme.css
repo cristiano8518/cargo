@@ -1,4 +1,9 @@
 /* ===== Карго — тақырыптық түстер және әдемі көрініс ===== */
+html,
+body {
+  height: 100%;
+}
+
 :root {
   --cargo-primary: #0d6efd;
   --cargo-primary-dark: #0a58ca;
@@ -16,9 +21,10 @@
 
 body {
   background: linear-gradient(180deg, #f8f9fc 0%, #eef1f6 100%);
-  min-height: 100vh;
   font-family: "Segoe UI", system-ui, sans-serif;
   color: #2d3142;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ----- Navbar ----- */
@@ -48,6 +54,7 @@ body {
 /* ----- Басты контент ----- */
 main.container {
   max-width: 1100px;
+  flex: 1 0 auto;
 }
 
 /* ----- Карточкалар ----- */
@@ -179,10 +186,18 @@ main.container {
 .form-control, .form-select {
   border-radius: var(--cargo-radius-sm);
   border: 1px solid #dee2e6;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-size: 0.95rem;
 }
 .form-control:focus, .form-select:focus {
   border-color: var(--cargo-primary);
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+}
+
+::placeholder {
+  color: #adb5bd !important;
+  opacity: 1;
 }
 
 /* ----- Footer ----- */
@@ -190,8 +205,8 @@ main.container {
   background: var(--cargo-nav);
   color: rgba(255, 255, 255, 0.85);
   padding: 1.25rem 0;
-  margin-top: 3rem;
   font-size: 0.9rem;
+  margin-top: auto;
 }
 
 /* ----- Иконкалар аралық бос орын ----- */

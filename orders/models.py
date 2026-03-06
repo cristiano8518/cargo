@@ -72,6 +72,12 @@ class Order(models.Model):
         blank=True,
         verbose_name="Қабылдамау себебі",
     )
+    delivery_photo = models.ImageField(
+        upload_to="deliveries/",
+        null=True,
+        blank=True,
+        verbose_name="Жеткізу фото",
+    )
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
@@ -79,6 +85,7 @@ class Order(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    admin_seen = models.BooleanField(default=False, verbose_name="Админ көрді")
 
     class Meta:
         verbose_name = 'Тапсырыс'
@@ -96,3 +103,48 @@ class Order(models.Model):
 
     def __str__(self):
         return f'#{self.pk} {self.origin} → {self.destination}'
+
+
+class Feedback(models.Model):
+    """Пайдаланушының кері байланысы / отзывы."""
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="feedbacks",
+    )
+    order = models.ForeignKey(
+        "orders.Order",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="feedbacks",
+        verbose_name="Тапсырыс (қаласаңыз)",
+    )
+    rating = models.PositiveSmallIntegerField(
+        choices=RATING_CHOICES,
+        default=5,
+        verbose_name="Баға (1–5 жұлдыз)",
+    )
+    text = models.TextField(verbose_name="Отзыв мәтіні")
+    photo = models.ImageField(
+        upload_to="feedback/",
+        null=True,
+        blank=True,
+        verbose_name="Фото (қаласаңыз)",
+    )
+    admin_reply = models.TextField(
+        blank=True,
+        verbose_name="Әкімші жауабы",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Кері байланыс"
+        verbose_name_plural = "Кері байланыстар"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"#{self.pk} feedback by {self.user}"
