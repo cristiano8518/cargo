@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'create' %}Жаңа тапсырыс{% else %}Тапсырысты өңдеу{% endif %}{% endblock %}
+{% block content %}
+  <h2 class="mb-3"><i class="bi bi-box-seam text-primary"></i> {% if mode == 'create' %}Жаңа тапсырыс{% else %}Тапсырысты өңдеу{% endif %}</h2>
+  <p class="text-muted"><i class="bi bi-info-circle"></i> Тек тізімнен таңдаңыз: жүк түрі (мал немесе тауар), маршрут (қайдан → қайда), салмақ, көлік түрі, жеткізу күні.</p>
+
+  {% if custom_route %}
+  <div class="alert alert-info mb-3">
+    <strong><i class="bi bi-map"></i> Маршрут (картадан):</strong> {{ custom_route.origin }} → {{ custom_route.destination }}{% if custom_route.distance_km %} • {{ custom_route.distance_km }} км{% endif %}
+  </div>
+  {% endif %}
+
+  <form method="post" class="card card-body">
+    {% csrf_token %}
+    <p>{{ form.cargo_type.label_tag }}{{ form.cargo_type }}{% if form.cargo_type.errors %}<span class="text-danger">{{ form.cargo_type.errors }}</span>{% endif %}</p>
+    <div id="custom-cargo-wrap" class="d-none">
+      <p>{{ form.custom_cargo_name.label_tag }}{{ form.custom_cargo_name }}{% if form.custom_cargo_name.errors %}<span class="text-danger">{{ form.custom_cargo_name.errors }}</span>{% endif %}</p>
+    </div>
+    {% if not custom_route %}
+    <p>{{ form.route.label_tag }}{{ form.route }}{% if form.route.errors %}<span class="text-danger">{{ form.route.errors }}</span>{% endif %}</p>
+    {% endif %}
+    <p>{{ form.weight_kg.label_tag }}{{ form.weight_kg }}{% if form.weight_kg.errors %}<span class="text-danger">{{ form.weight_kg.errors }}</span>{% endif %}</p>
+    <p>{{ form.vehicle_type.label_tag }}{{ form.vehicle_type }}{% if form.vehicle_type.errors %}<span class="text-danger">{{ form.vehicle_type.errors }}</span>{% endif %}</p>
+    <p>{{ form.requested_delivery_date.label_tag }}{{ form.requested_delivery_date }}{% if form.requested_delivery_date.errors %}<span class="text-danger">{{ form.requested_delivery_date.errors }}</span>{% endif %}</p>
+    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i> Сақтау</button>
+      <a class="btn btn-outline-secondary" href="{% url 'orders:list' %}"><i class="bi bi-x-lg"></i> Болдырмау</a>
+      {% if mode == 'update' %}
+        <a class="btn btn-outline-danger ms-auto" href="{% url 'orders:delete' order.id %}"><i class="bi bi-trash"></i> Өшіру</a>
+      {% endif %}
+    </div>
+  </form>
+  <script>
+    (function() {
+      var sel = document.getElementById('id_cargo_type');
+      var wrap = document.getElementById('custom-cargo-wrap');
+      var inp = document.getElementById('id_custom_cargo_name');
+      if (!sel || !wrap) return;
+      function toggle() {
+        var opt = sel.options[sel.selectedIndex];
+        var label = (opt && (opt.text || opt.textContent || '')).toString().trim();
+        var isOther = label === 'Басқа' || (opt && !opt.value);
+        wrap.classList.toggle('d-none', !isOther);
+        if (inp) inp.required = isOther;
+      }
+      sel.addEventListener('change', toggle);
+      toggle();
+    })();
+  </script>
+{% endblock %}
+

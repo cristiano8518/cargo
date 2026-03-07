@@ -1,0 +1,83 @@
+{% load static %}
+<!doctype html>
+<html lang="kk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Карго жеткізу{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body id="body-theme">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cargo">
+      <div class="container">
+        <a class="navbar-brand" href="/"><i class="bi bi-truck"></i> Cargo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Мәзір">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'users:dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="/orders/"><i class="bi bi-box-seam"></i> Тапсырыстар</a></li>
+            <li class="nav-item"><a class="nav-link" href="/cargo/types/"><i class="bi bi-list-ul"></i> Жүк түрлері</a></li>
+            <li class="nav-item"><a class="nav-link" href="/cargo/routes/"><i class="bi bi-geo-alt"></i> Маршруттар</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'cargo:addresses' %}"><i class="bi bi-geo"></i> Біздің мекенжайлар</a></li>
+            {% if user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}#settings"><i class="bi bi-gear"></i> Баптау</a></li>
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}"><i class="bi bi-person-circle"></i> {{ user.username }}</a></li>
+              <li class="nav-item">
+                <form method="post" action="{% url 'logout' %}" class="d-inline">
+                  {% csrf_token %}
+                  <button class="btn btn-outline-light btn-sm mt-1" type="submit"><i class="bi bi-box-arrow-right"></i> Шығу</button>
+                </form>
+              </li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}"><i class="bi bi-person-plus"></i> Тіркелу</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Кіру</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-4">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }} mb-3 d-flex align-items-center" role="alert">
+            <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}exclamation-triangle{% else %}info-circle{% endif %} me-2 fs-5"></i>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-cargo text-center">
+      <div class="container">
+        <span><i class="bi bi-truck"></i> Карго жеткізу</span> — Байерлік қызмет
+        <span class="mx-2">|</span>
+        <a href="{% url 'cargo:contact' %}" class="text-white text-decoration-none opacity-75"><i class="bi bi-telephone"></i> Байланыс</a>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (function() {
+        var theme = localStorage.getItem('cargo-theme') || 'light';
+        document.body.classList.toggle('theme-dark', theme === 'dark');
+      })();
+    </script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

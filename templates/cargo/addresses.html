@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Біздің мекенжайлар — Карго{% endblock %}
+{% block extra_css %}
+<style>
+  .address-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    color: #fff;
+  }
+  .address-hero h2 { color: #fff; font-weight: 700; margin-bottom: 0.5rem; }
+  .address-hero .lead { color: rgba(255,255,255,0.85); margin: 0; }
+  .city-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    height: 100%;
+  }
+  .city-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+    border-color: #f59e0b;
+  }
+  .city-card.main-branch { border-left: 4px solid #d97706; }
+  .city-card .city-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .city-card.main-branch .city-header {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  }
+  .city-card .city-name { font-weight: 700; font-size: 1.2rem; color: #1e293b; }
+  .city-card .main-badge {
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+    background: #d97706; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px;
+  }
+  .city-card .phone-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: #059669; font-weight: 600; text-decoration: none;
+    transition: color 0.2s;
+  }
+  .city-card .phone-link:hover { color: #047857; }
+  .city-card .address-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.6rem 0; border-bottom: 1px solid #f1f5f9;
+  }
+  .city-card .address-item:last-child { border-bottom: none; }
+  .city-card .address-item i { color: #d97706; margin-top: 0.2rem; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="address-hero">
+    <h2><i class="bi bi-geo-alt-fill me-2" style="color:#fbbf24"></i> Біздің мекенжайлар</h2>
+    <p class="lead">Қазақстанның 5 қаласында — Алматы (басты филиал), Шымкент, Атырау, Қарағанды, Тараз</p>
+  </div>
+
+  <div class="row g-4">
+    {% for city in cities %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card city-card {% if city.is_main %}main-branch{% endif %} h-100">
+          <div class="city-header d-flex justify-content-between align-items-center">
+            <span class="city-name">{{ city.city }}</span>
+            {% if city.is_main %}<span class="main-badge">Басты филиал</span>{% endif %}
+          </div>
+          <div class="card-body">
+            <a href="tel:{{ city.phone|cut:' '|cut:'('|cut:')'|cut:'-' }}" class="phone-link mb-3">
+              <i class="bi bi-telephone-fill"></i>
+              {{ city.phone }}
+            </a>
+            <p class="text-muted small mb-2">Мекенжайлар:</p>
+            <div class="address-list">
+              {% for addr in city.addresses %}
+                <div class="address-item">
+                  <i class="bi bi-geo-alt"></i>
+                  <span>{{ addr }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
