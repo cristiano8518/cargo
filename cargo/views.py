@@ -2,7 +2,10 @@ import json
 import urllib.request
 import urllib.error
 
+<<<<<<< HEAD
 from django.contrib import messages
+=======
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -10,8 +13,12 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
+<<<<<<< HEAD
 from .forms import ContactForm
 from .models import CargoType, Route, ContactMessage
+=======
+from .models import CargoType, Route
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 
 OSRM_BASE = "https://router.project-osrm.org/route/v1/driving"
 PRICE_PER_KM = 50  # тг/км — шамалы баға есебі үшін
@@ -45,6 +52,7 @@ def route_list(request):
     return render(request, "cargo/route_list.html", {"page_obj": page_obj, "q": q})
 
 
+<<<<<<< HEAD
 # Наши адреса — 5 городов, по 2 адреса в каждом
 ADDRESSES_DATA = [
     {
@@ -112,6 +120,8 @@ def contact_page(request):
     return render(request, "cargo/contact.html", {"form": form, "reviews": recent})
 
 
+=======
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 def route_map_geojson(request, route_id):
     """Маршрут үшін жол геометриясы (картада сызу үшін). OSRM арқылы жол алынады."""
     route = get_object_or_404(Route, pk=route_id)

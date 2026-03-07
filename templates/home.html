@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Басты бет — Карго{% endblock %}
 {% block content %}
+<<<<<<< HEAD
   <div class="hero-cargo p-4 p-lg-5 mb-5 rounded">
     <div class="col-lg-9 px-0">
       <h1 class="display-5 mb-3"><i class="bi bi-truck"></i> Карго жеткізу</h1>
@@ -9,6 +10,15 @@
         <span style="font-size: 0.95rem; color: rgba(255,255,255,0.7);">Байерлік қызмет — сенімді жеткізу</span>
       </p>
       <p class="mb-0 d-flex flex-wrap gap-2">
+=======
+  <div class="hero-cargo p-4 p-md-5 mb-4 rounded">
+    <div class="col-lg-8 px-0">
+      <h1 class="display-6 mb-3"><i class="bi bi-truck text-primary"></i> Карго жеткізу (Байерлік қызмет)</h1>
+      <p class="lead my-3">
+        Тапсырыс беріңіз, статусын бақылаңыз, баға мен маршруттарды қараңыз.
+      </p>
+      <p class="lead mb-0">
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
         {% if user.is_authenticated %}
           <a href="/orders/" class="btn btn-primary btn-lg"><i class="bi bi-box-seam"></i> Тапсырыстарға өту</a>
         {% else %}

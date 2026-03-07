@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ===== Карго — элегантный современный дизайн ===== */
 /* Палитра: Slate & Amber — глубина + тепло */
 
@@ -92,10 +93,57 @@ body {
   transition: all var(--cargo-transition);
 }
 
+=======
+/* ===== Карго — тақырыптық түстер және әдемі көрініс ===== */
+html,
+body {
+  height: 100%;
+}
+
+:root {
+  --cargo-primary: #0d6efd;
+  --cargo-primary-dark: #0a58ca;
+  --cargo-accent: #198754;
+  --cargo-accent-light: #20c997;
+  --cargo-warning: #fd7e14;
+  --cargo-danger: #dc3545;
+  --cargo-dark: #1a1d29;
+  --cargo-nav: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%);
+  --cargo-card-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+  --cargo-card-hover: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.12);
+  --cargo-radius: 0.75rem;
+  --cargo-radius-sm: 0.5rem;
+}
+
+body {
+  background: linear-gradient(180deg, #f8f9fc 0%, #eef1f6 100%);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #2d3142;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ----- Navbar ----- */
+.navbar-cargo {
+  background: var(--cargo-nav) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+.navbar-cargo .navbar-brand {
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+}
+.navbar-cargo .nav-link {
+  border-radius: var(--cargo-radius-sm);
+  padding: 0.5rem 0.75rem !important;
+  transition: background 0.2s, color 0.2s;
+}
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 .navbar-cargo .nav-link:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff !important;
 }
+<<<<<<< HEAD
 
 .navbar-cargo .nav-link i {
   opacity: 0.9;
@@ -298,10 +346,91 @@ main.container {
 }
 
 /* ----- Таблица ----- */
+=======
+.navbar-cargo .btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* ----- Басты контент ----- */
+main.container {
+  max-width: 1100px;
+  flex: 1 0 auto;
+}
+
+/* ----- Карточкалар ----- */
+.card {
+  border: none;
+  border-radius: var(--cargo-radius);
+  box-shadow: var(--cargo-card-shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: var(--cargo-card-hover);
+}
+.card-body {
+  padding: 1.25rem 1.5rem;
+}
+
+/* ----- Батырмалар ----- */
+.btn {
+  border-radius: var(--cargo-radius-sm);
+  font-weight: 600;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.btn-primary {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  border: none;
+}
+.btn-success {
+  background: linear-gradient(135deg, #198754 0%, #157347 100%);
+  border: none;
+}
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+  border: none;
+}
+.btn-lg {
+  padding: 0.6rem 1.25rem;
+}
+
+/* ----- Badge ----- */
+.badge {
+  border-radius: 0.35rem;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+}
+.badge-status-pending { background: #6c757d; }
+.badge-status-accepted { background: #198754; }
+.badge-status-rejected { background: #dc3545; }
+.badge-status-payment_pending { background: #fd7e14; }
+.badge-status-paid { background: #0d6efd; }
+.badge-status-in_transit { background: #0dcaf0; color: #000; }
+.badge-status-delivered { background: #198754; }
+.badge-status-cancelled { background: #6c757d; }
+
+/* ----- Alert ----- */
+.alert {
+  border: none;
+  border-radius: var(--cargo-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.alert-success { background: linear-gradient(135deg, #d1e7dd 0%, #badbcc 100%); }
+.alert-warning { background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); }
+.alert-info { background: linear-gradient(135deg, #cff4fc 0%, #b6effb 100%); }
+.alert-danger { background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%); }
+
+/* ----- Кесте ----- */
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 .table {
   border-radius: var(--cargo-radius);
   overflow: hidden;
   box-shadow: var(--cargo-card-shadow);
+<<<<<<< HEAD
   background: #fff;
 }
 
@@ -487,12 +616,85 @@ main.container {
 .page-item.disabled .page-link {
   background: var(--cargo-slate-100) !important;
   color: var(--cargo-slate-400) !important;
+=======
+}
+.table thead th {
+  background: var(--cargo-dark);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  padding: 0.85rem 1rem;
+}
+.table tbody tr {
+  transition: background 0.15s;
+}
+.table tbody tr:hover {
+  background: rgba(13, 110, 253, 0.06);
+}
+
+/* ----- Hero (басты бет) ----- */
+.hero-cargo {
+  background: linear-gradient(135deg, #e8f4fd 0%, #d0e8fc 50%, #b8dcfb 100%);
+  border: none;
+  border-radius: var(--cargo-radius);
+  box-shadow: var(--cargo-card-shadow);
+  padding: 2rem 2.5rem !important;
+}
+.hero-cargo .display-6 {
+  color: var(--cargo-dark);
+  font-weight: 700;
+}
+.hero-cargo .lead {
+  color: #495057;
+}
+
+/* ----- Dashboard статистика карточкалары ----- */
+.stat-card {
+  background: #fff;
+  border-radius: var(--cargo-radius);
+  box-shadow: var(--cargo-card-shadow);
+  padding: 1.25rem 1.5rem;
+  height: 100%;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.stat-card:hover {
+  box-shadow: var(--cargo-card-hover);
+  transform: translateY(-2px);
+}
+.stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--cargo-primary);
+}
+.stat-card .stat-label {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* ----- Форма ----- */
+.form-control, .form-select {
+  border-radius: var(--cargo-radius-sm);
+  border: 1px solid #dee2e6;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-size: 0.95rem;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--cargo-primary);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+}
+
+::placeholder {
+  color: #adb5bd !important;
+  opacity: 1;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 }
 
 /* ----- Footer ----- */
 .footer-cargo {
   background: var(--cargo-nav);
   color: rgba(255, 255, 255, 0.85);
+<<<<<<< HEAD
   padding: 1.5rem 0;
   font-size: 0.9rem;
   margin-top: auto;
@@ -816,3 +1018,13 @@ body.theme-dark .text-dark { color: #f1f5f9 !important; }
 body.theme-dark .text-body { color: #e2e8f0 !important; }
 
 body.theme-dark .opacity-75 { color: #cbd5e1 !important; }
+=======
+  padding: 1.25rem 0;
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+
+/* ----- Иконкалар аралық бос орын ----- */
+.bi + span, .bi + .ms-1, .me-1 + .bi { margin-left: 0.35rem; }
+.btn .bi { vertical-align: -0.15em; }
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11

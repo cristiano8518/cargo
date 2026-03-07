@@ -4,7 +4,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <style>
     tr.order-row { cursor: pointer; }
+<<<<<<< HEAD
     tr.order-row:hover { background-color: #fffbeb !important; }
+=======
+    tr.order-row:hover { background-color: rgba(13, 110, 253, 0.06) !important; }
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
     tr.order-row td.actions { cursor: default; }
     tr.order-row td.actions a, tr.order-row td.actions button { pointer-events: auto; }
   </style>
@@ -164,7 +168,11 @@
 
       function showRouteInModal(data) {
         ensureMap();
+<<<<<<< HEAD
         var polyline = L.polyline(data.polyline, { color: '#d97706', weight: 4 });
+=======
+        var polyline = L.polyline(data.polyline, { color: '#0d6efd', weight: 4 });
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
         var start = L.marker(data.origin).bindPopup(data.origin_name || 'Шығу');
         var end = L.marker(data.destination).bindPopup(data.destination_name || 'Келу');
         currentLayer = L.layerGroup([polyline, start, end]).addTo(map);

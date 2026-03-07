@@ -5,7 +5,11 @@
   <div class="alert alert-warning">
     Сіз расымен <strong>#{{ order.id }}</strong> тапсырысын өшіргіңіз келе ме?
   </div>
+<<<<<<< HEAD
   <form method="post" action="{% url 'orders:delete' order.id %}">
+=======
+  <form method="post">
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
     {% csrf_token %}
     <button class="btn btn-danger" type="submit">Иә, өшіремін</button>
     <a class="btn btn-outline-secondary" href="{% url 'orders:detail' order.id %}">Жоқ</a>

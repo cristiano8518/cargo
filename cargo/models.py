@@ -49,6 +49,7 @@ class Route(models.Model):
             self.origin_lat is not None, self.origin_lng is not None,
             self.destination_lat is not None, self.destination_lng is not None,
         ))
+<<<<<<< HEAD
 
 
 class ContactMessage(models.Model):
@@ -66,3 +67,5 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.created_at:%Y-%m-%d %H:%M}"
+=======
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11

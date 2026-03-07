@@ -154,7 +154,11 @@
       function showRoute(data) {
         exitDrawMode();
         if (currentLayer) map.removeLayer(currentLayer);
+<<<<<<< HEAD
         var polyline = L.polyline(data.polyline, { color: '#d97706', weight: 4 });
+=======
+        var polyline = L.polyline(data.polyline, { color: '#0d6efd', weight: 4 });
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
         var start = L.marker(data.origin).bindPopup(data.origin_name || 'Шығу');
         var end = L.marker(data.destination).bindPopup(data.destination_name || 'Келу');
         currentLayer = L.layerGroup([polyline, start, end]).addTo(map);
