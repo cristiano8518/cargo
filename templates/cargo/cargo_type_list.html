@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+<<<<<<< HEAD
 {% block title %}Жүк түрлері — Карго{% endblock %}
 {% block extra_css %}
 <style>
@@ -115,11 +116,36 @@
       </div>
       <div class="col-12 col-md-3 d-grid">
         <button class="btn btn-primary" type="submit"><i class="bi bi-search me-2"></i>Іздеу</button>
+=======
+{% block title %}Жүк түрлері{% endblock %}
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-list-ul text-primary"></i> Жүк түрлері</h2>
+    <a class="btn btn-outline-primary" href="/admin/cargo/cargotype/"><i class="bi bi-gear"></i> Админда басқару</a>
+  </div>
+
+  <form class="card card-body mb-3" method="get" action="{% url 'cargo:types' %}">
+    <div class="row g-2">
+      <div class="col-12 col-md-9">
+        <input
+          id="cargo-filter-input"
+          class="form-control"
+          name="q"
+          type="text"
+          value="{{ q }}"
+          placeholder="Іздеу (атауы/сипаттама)"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-12 col-md-3 d-grid">
+        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i> Іздеу</button>
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
       </div>
     </div>
   </form>
 
   {% if page_obj.object_list %}
+<<<<<<< HEAD
     <div class="row g-4" id="cargo-types-row">
       {% for ct in page_obj.object_list %}
         <div class="col-12 col-sm-6 col-lg-4 cargo-type-col">
@@ -138,12 +164,23 @@
               <a href="{% url 'orders:create' %}?cargo_type={{ ct.id }}" class="btn btn-primary btn-sm w-100 btn-order-type" onclick="event.stopPropagation();">
                 <i class="bi bi-cart-plus me-1"></i> Тапсырыс беру
               </a>
+=======
+    <div class="row g-3">
+      {% for ct in page_obj.object_list %}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ ct.name }}</h5>
+              <p class="card-text text-muted mb-2">{{ ct.description|default:"-" }}</p>
+              <div class="fw-semibold"><i class="bi bi-currency-exchange text-success"></i> {{ ct.price_per_kg }} тг / кг</div>
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
 
+<<<<<<< HEAD
     <div class="selected-bar" id="selected-bar">
       <span class="d-flex align-items-center gap-2">
         <i class="bi bi-check2-square"></i>
@@ -157,6 +194,10 @@
 
     <nav class="mt-4" aria-label="Pagination">
       <ul class="pagination justify-content-center">
+=======
+    <nav class="mt-3" aria-label="Pagination">
+      <ul class="pagination">
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
         {% if page_obj.has_previous %}
           <li class="page-item"><a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
         {% else %}
@@ -171,18 +212,23 @@
       </ul>
     </nav>
   {% else %}
+<<<<<<< HEAD
     <div class="alert alert-info d-flex align-items-center">
       <i class="bi bi-info-circle fs-4 me-3"></i>
       <div>
         <strong>Жүк түрі табылмады.</strong> Админ панельден қосып көріңіз.
       </div>
     </div>
+=======
+    <div class="alert alert-info">Жүк түрі табылмады. Админ панельден қосып көріңіз.</div>
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
   {% endif %}
 {% endblock %}
 {% block extra_js %}
   <script>
     (function() {
       var input = document.getElementById('cargo-filter-input');
+<<<<<<< HEAD
       var cols = document.querySelectorAll('.cargo-type-col');
       if (input && cols.length) {
         input.addEventListener('input', function() {
@@ -231,6 +277,24 @@
         });
         var check = card.querySelector('.select-check i');
         if (check) check.classList.add('d-none');
+=======
+      if (!input) return;
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.card .card-title')).map(function(title) {
+        return {
+          el: title.closest('.col-12'),
+          text: (title.textContent || '').toLowerCase()
+        };
+      });
+      input.addEventListener('input', function() {
+        var val = (input.value || '').toLowerCase().trim();
+        cards.forEach(function(item) {
+          if (!val || item.text.indexOf(val) !== -1) {
+            item.el.style.display = '';
+          } else {
+            item.el.style.display = 'none';
+          }
+        });
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
       });
     })();
   </script>

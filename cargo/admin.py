@@ -1,5 +1,9 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from .models import CargoType, Route, ContactMessage
+=======
+from .models import CargoType, Route
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 
 
 @admin.register(CargoType)
@@ -31,6 +35,7 @@ class RouteAdmin(admin.ModelAdmin):
             'description': 'Жол картада көрсетілуі үшін толтырыңыз. Бос қалдырсаңыз, seed миграция толтырады.',
         }),
     )
+<<<<<<< HEAD
 
 
 @admin.register(ContactMessage)
@@ -38,3 +43,5 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'phone', 'created_at')
     search_fields = ('name', 'email', 'message')
     readonly_fields = ('created_at',)
+=======
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11

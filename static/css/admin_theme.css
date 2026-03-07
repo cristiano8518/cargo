@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ===== Django Admin — элегантная панель в стиле Карго ===== */
 /* Палитра Slate & Amber — согласованность с основным сайтом */
 
@@ -27,19 +28,41 @@ body {
   color: #fff !important;
   padding: 14px 24px !important;
   box-shadow: 0 4px 24px rgba(15, 23, 42, 0.25);
+=======
+/* ===== Django Admin — Карго тақырыбы ===== */
+
+:root {
+  --admin-primary: #1a1d29;
+  --admin-primary-light: #2d3142;
+  --admin-accent: #0d6efd;
+  --admin-radius: 0.5rem;
+}
+
+/* Заголовок */
+#header {
+  background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%) !important;
+  color: #fff !important;
+  padding: 12px 20px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 }
 
 #branding h1 {
   margin: 0 !important;
   padding: 0 !important;
   font-weight: 700 !important;
+<<<<<<< HEAD
   font-size: 1.2rem !important;
   letter-spacing: -0.02em;
+=======
+  font-size: 1.25rem !important;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 }
 
 #branding h1 a {
   color: #fff !important;
   text-decoration: none !important;
+<<<<<<< HEAD
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -52,11 +75,18 @@ body {
 #branding h1 .bi {
   color: #fbbf24;
   font-size: 1.1em;
+=======
+}
+
+#branding h1 a:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 }
 
 /* Ссылки в шапке */
 #user-tools {
   font-size: 0.9rem !important;
+<<<<<<< HEAD
   font-weight: 500;
 }
 
@@ -69,11 +99,26 @@ body {
 
 #user-tools a:hover {
   background: rgba(255, 255, 255, 0.12) !important;
+=======
+  padding-top: 4px !important;
+}
+
+#user-tools a {
+  color: rgba(255, 255, 255, 0.95) !important;
+  border-radius: 4px;
+  padding: 4px 8px;
+  transition: background 0.2s;
+}
+
+#user-tools a:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
   color: #fff !important;
 }
 
 /* Контент */
 #content {
+<<<<<<< HEAD
   padding: 24px !important;
   max-width: 1400px;
   margin: 0 auto;
@@ -148,27 +193,95 @@ body {
 
 .module ul.actionlist li a:hover {
   color: var(--admin-amber-500) !important;
+=======
+  padding: 20px !important;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+#content h1 {
+  color: #1a1d29 !important;
+  font-weight: 700 !important;
+  margin-bottom: 20px !important;
+  font-size: 1.5rem !important;
+}
+
+/* Модули (блоки на главной админки) */
+.module h2,
+.module caption {
+  background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%) !important;
+  color: #fff !important;
+  padding: 10px 15px !important;
+  border-radius: var(--admin-radius) var(--admin-radius) 0 0 !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+}
+
+.module table {
+  border-radius: 0 0 var(--admin-radius) var(--admin-radius) !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.module table th {
+  background: #f8f9fa !important;
+  font-weight: 600 !important;
+  padding: 10px 12px !important;
+}
+
+.module table td {
+  padding: 10px 12px !important;
+}
+
+.module table tr:nth-child(even) {
+  background: #f8f9fc !important;
+}
+
+.module table tr:hover td {
+  background: #eef1f6 !important;
+}
+
+/* Кнопки и ссылки в модулях */
+.module ul.actionlist li a {
+  color: var(--admin-accent) !important;
+  font-weight: 500 !important;
+}
+
+.module ul.actionlist li a:hover {
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
   text-decoration: underline !important;
 }
 
 /* Кнопки добавления */
 .addlink,
 .add-row a {
+<<<<<<< HEAD
   color: #059669 !important;
+=======
+  color: #198754 !important;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
   font-weight: 600 !important;
 }
 
 .addlink:hover,
 .add-row a:hover {
+<<<<<<< HEAD
   color: #047857 !important;
   text-decoration: underline !important;
 }
 
 /* Формы */
+=======
+  color: #157347 !important;
+}
+
+/* Формы в админке */
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="number"],
+<<<<<<< HEAD
 input[type="url"],
 textarea,
 select {
@@ -177,18 +290,31 @@ select {
   padding: 8px 12px !important;
   font-size: 0.9375rem !important;
   transition: border-color 0.2s, box-shadow 0.2s;
+=======
+textarea,
+select {
+  border-radius: 4px !important;
+  border: 1px solid #dee2e6 !important;
+  padding: 6px 10px !important;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 }
 
 input:focus,
 textarea:focus,
 select:focus {
+<<<<<<< HEAD
   border-color: var(--admin-amber-500) !important;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important;
+=======
+  border-color: var(--admin-accent) !important;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.2) !important;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
   outline: none !important;
 }
 
 /* Кнопка Submit */
 .submit-row {
+<<<<<<< HEAD
   padding: 20px !important;
   background: #fff !important;
   border: 1px solid var(--admin-slate-200);
@@ -247,4 +373,35 @@ select:focus {
 
 #content-main .module h2 a:hover {
   color: #fbbf24 !important;
+=======
+  padding: 15px !important;
+  background: #f8f9fc !important;
+  border-radius: var(--admin-radius) !important;
+  margin-top: 20px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+.submit-row input[type="submit"] {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+.submit-row input[type="submit"]:hover {
+  opacity: 0.95 !important;
+}
+
+/* Панель "Recent actions" */
+#recent-actions-module h2 {
+  border-radius: var(--admin-radius) var(--admin-radius) 0 0 !important;
+}
+
+#branding h1 .bi {
+  margin-right: 8px;
+  vertical-align: -0.2em;
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 }

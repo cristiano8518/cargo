@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+<<<<<<< HEAD
 {% load static %}
 {% block title %}Кіру — Карго{% endblock %}
 {% block extra_css %}
@@ -122,3 +123,20 @@
     </div>
   </div>
 {% endblock %}
+=======
+{% block title %}Кіру{% endblock %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-4">
+      <h2 class="mb-3"><i class="bi bi-box-arrow-in-right text-primary"></i> Кіру</h2>
+      <form method="post" class="card card-body">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary w-100" type="submit"><i class="bi bi-box-arrow-in-right"></i> Кіру</button>
+      </form>
+      <p class="mt-3 text-center">Аккаунтыңыз жоқ па? <a href="{% url 'users:signup' %}">Тіркелу</a></p>
+    </div>
+  </div>
+{% endblock %}
+
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11

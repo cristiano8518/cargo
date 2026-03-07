@@ -7,7 +7,11 @@
       {% if form.non_field_errors %}
         <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ form.non_field_errors }}</div>
       {% endif %}
+<<<<<<< HEAD
       <form method="post" class="card card-body" action="{% url 'users:signup' %}">
+=======
+      <form method="post" class="card card-body" action="">
+>>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
         {% csrf_token %}
         {% for field in form %}
           <div class="mb-2">
