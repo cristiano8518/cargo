@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Байланыс — Карго{% endblock %}
+{% block extra_css %}
+<style>
+  .contact-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    color: #fff;
+  }
+  .contact-hero h2 { color: #fff; font-weight: 700; margin-bottom: 1rem; }
+  .contact-info-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    transition: all 0.25s ease;
+  }
+  .contact-info-card:hover { border-color: #f59e0b; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+  .contact-info-card a { color: #d97706; font-weight: 600; text-decoration: none; }
+  .contact-info-card a:hover { color: #b45309; }
+  .contact-info-card .icon-wrap {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, rgba(217,119,6,0.15) 0%, rgba(245,158,11,0.1) 100%);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: #d97706; font-size: 1.5rem;
+  }
+  .reviews-panel {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .reviews-panel .reviews-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .reviews-panel .review-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .reviews-panel .review-item:last-child { border-bottom: none; }
+  .reviews-panel .review-name { font-weight: 600; color: #1e293b; }
+  .reviews-panel .review-date { font-size: 0.8rem; color: #94a3b8; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="contact-hero">
+    <h2><i class="bi bi-telephone-fill me-2" style="color:#fbbf24"></i> Байланыс</h2>
+    <p class="lead mb-0">Сұрақтарға жауап алу үшін бізбен байланысыңыз</p>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-md-6">
+      <div class="contact-info-card">
+        <div class="d-flex align-items-start gap-3">
+          <div class="icon-wrap"><i class="bi bi-envelope-fill"></i></div>
+          <div>
+            <h6 class="text-muted mb-1">Email</h6>
+            <a href="mailto:info@cargo.kz">info@cargo.kz</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="contact-info-card">
+        <div class="d-flex align-items-start gap-3">
+          <div class="icon-wrap"><i class="bi bi-telephone-fill"></i></div>
+          <div>
+            <h6 class="text-muted mb-1">Телефон (басты филиал)</h6>
+            <a href="tel:+77271234567">+7 (727) 123-45-67</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-lg-5">
+      <div class="card card-body mb-4">
+        <h5 class="mb-3"><i class="bi bi-chat-left-text text-warning me-2"></i> Хабарлама жіберу</h5>
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">{{ form.name.label }}</label>
+            {{ form.name }}
+            {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.email.label }}</label>
+            {{ form.email }}
+            {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.phone.label }}</label>
+            {{ form.phone }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.message.label }}</label>
+            {{ form.message }}
+            {% if form.message.errors %}<div class="text-danger small">{{ form.message.errors.0 }}</div>{% endif %}
+          </div>
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-send me-2"></i> Жіберу</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-12 col-lg-7">
+      <div class="reviews-panel">
+        <div class="reviews-header"><i class="bi bi-chat-quote me-2"></i> Пікірлер панелі</div>
+        {% if reviews %}
+          <div class="reviews-list" style="max-height: 400px; overflow-y: auto;">
+            {% for r in reviews %}
+              <div class="review-item">
+                <div class="d-flex justify-content-between align-items-start">
+                  <span class="review-name">{{ r.name }}</span>
+                  <span class="review-date">{{ r.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                <p class="mb-0 mt-2">{{ r.message }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="p-4 text-center text-muted">
+            <i class="bi bi-chat-dots fs-1"></i>
+            <p class="mt-2 mb-0">Әзірге пікірлер жоқ. Алғашқы пікірді сіз қалдырыңыз!</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

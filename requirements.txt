@@ -1,0 +1,17 @@
+# Карго жеткізу веб-сайты — Django жобасы
+# 1-қадам: Django және негізгі пакеттер
+Django>=4.2,<5.0
+python-dotenv>=1.0.0
+
+# API + Frontend интеграциясы
+djangorestframework>=3.14
+djangorestframework-simplejwt>=5.3
+django-filter>=24.2
+django-cors-headers>=4.3
+Pillow>=10.0
+
+# Кейінгі қадамдар (prod/test) — соңыра қосамыз
+# gunicorn>=21.0
+# psycopg2-binary>=2.9
+# pytest-django>=4.5
+# pytest-cov>=4.1

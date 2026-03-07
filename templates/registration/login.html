@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Кіру — Карго{% endblock %}
+{% block extra_css %}
+<style>
+  .login-page { min-height: 70vh; display: flex; align-items: center; }
+  .login-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
+    overflow: hidden;
+  }
+  .login-card .login-visual {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 320px;
+  }
+  .login-card .login-visual .icon-wrap {
+    width: 72px;
+    height: 72px;
+    background: rgba(251, 191, 36, 0.2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .login-card .login-visual .icon-wrap i { font-size: 2rem; color: #fbbf24; }
+  .login-card .login-visual h3 { color: #fff; font-weight: 700; font-size: 1.35rem; margin-bottom: 0.5rem; }
+  .login-card .login-visual p { color: rgba(255,255,255,0.75); font-size: 0.95rem; margin: 0; }
+  .login-card .login-form { padding: 2.5rem; }
+  .login-card .login-form h2 { font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; font-size: 1.5rem; }
+  .login-card .login-form .subtitle { color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem; }
+  .login-card .form-floating .form-control {
+    height: 52px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+  }
+  .login-card .form-floating .form-control:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+  }
+  .login-card .form-floating label { color: #64748b; }
+  .login-card .btn-login {
+    height: 48px;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    border: none;
+    color: #fff;
+    transition: all 0.2s;
+  }
+  .login-card .btn-login:hover {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(217, 119, 6, 0.35);
+    color: #fff;
+  }
+  .login-card .form-error { color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem; }
+  .login-card .link-signup { color: #d97706; font-weight: 600; }
+  .login-card .link-signup:hover { color: #b45309; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="login-page">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+          <div class="card login-card">
+            <div class="row g-0">
+              <div class="col-md-5 d-none d-md-flex login-visual">
+                <div>
+                  <div class="icon-wrap"><i class="bi bi-truck"></i></div>
+                  <h3>Карго жеткізу</h3>
+                  <p>Тапсырыстарыңызды басқарыңыз, статусты қадағалаңыз және төлем жасаңыз.</p>
+                </div>
+              </div>
+              <div class="col-md-7 login-form">
+                <h2><i class="bi bi-box-arrow-in-right text-warning"></i> Кіру</h2>
+                <p class="subtitle">Аккаунтыңызға кіру үшін деректерді енгізіңіз</p>
+
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger d-flex align-items-center mb-3">
+                    <i class="bi bi-exclamation-triangle me-2 fs-5"></i>
+                    <div>{{ form.non_field_errors }}</div>
+                  </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}">
+                  {% csrf_token %}
+                  <div class="form-floating mb-3">
+                    <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="id_username"
+                      placeholder="Логин" value="{{ form.username.value|default:'' }}" autocomplete="username" required autofocus>
+                    <label for="id_username">Логин</label>
+                    {% if form.username.errors %}<div class="form-error">{{ form.username.errors.0 }}</div>{% endif %}
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="password" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="id_password"
+                      placeholder="Құпиясөз" autocomplete="current-password" required>
+                    <label for="id_password">Құпиясөз</label>
+                    {% if form.password.errors %}<div class="form-error">{{ form.password.errors.0 }}</div>{% endif %}
+                  </div>
+                  <input type="hidden" name="next" value="{{ next|default:'' }}">
+
+                  <button type="submit" class="btn btn-login w-100 mb-3">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Кіру
+                  </button>
+                </form>
+
+                <p class="text-center mb-0 text-muted">
+                  Аккаунтыңыз жоқ па? <a href="{% url 'users:signup' %}" class="link-signup">Тіркелу</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

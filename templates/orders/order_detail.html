@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Тапсырыс #{{ order.id }}{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-box-seam text-primary"></i> Тапсырыс #{{ order.id }}</h2>
+    <div class="d-flex gap-2">
+      {% if order.status == 'pending' %}
+        <a class="btn btn-outline-primary" href="{% url 'orders:update' order.id %}"><i class="bi bi-pencil"></i> Өңдеу</a>
+        <a class="btn btn-outline-danger" href="{% url 'orders:delete' order.id %}"><i class="bi bi-trash"></i> Өшіру</a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if order.status == 'payment_pending' %}
+    <div class="alert alert-success mb-3 d-flex align-items-start">
+      <i class="bi bi-check-circle fs-4 me-2"></i>
+      <div>
+        <h5 class="alert-heading">Тапсырысыңыз қабылданды</h5>
+        <p class="mb-2">Төлем сомасы: <strong>{{ order.estimated_price }} тг</strong>.</p>
+        <form method="post" action="{% url 'orders:confirm_payment' order.id %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-currency-exchange"></i> Төлем жасау</button>
+        </form>
+        <p class="mb-0 mt-2 small text-muted">Басканда статус «Төленді» болып, содан кейін «Жолда» жаңарады.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="card card-body">
+    <p class="mb-1"><strong>Жүк түрі:</strong> {{ order.cargo_type|default:"-" }}</p>
+    <p class="mb-1"><strong>Салмақ:</strong> {% if order.weight_kg %}{{ order.weight_kg }} кг{% else %}-{% endif %}</p>
+    <p class="mb-1"><strong>Көлік түрі:</strong> {{ order.get_vehicle_type_display }}</p>
+    <p class="mb-1"><strong>Есептелген баға:</strong> {{ order.estimated_price }}</p>
+    <p class="mb-1"><strong>Не тасымалдау:</strong> {{ order.description }}</p>
+    <p class="mb-1"><strong>Қайдан:</strong> {{ order.origin }}</p>
+    <p class="mb-1"><strong>Қайда жеткізу:</strong> {{ order.destination }}</p>
+    <p class="mb-1"><strong>Жеткізу күні:</strong> {{ order.requested_delivery_date|default:"-" }}</p>
+    <p class="mb-1"><strong>Статус:</strong> <span class="badge badge-status-{{ order.status }}">{{ order.get_status_display }}</span></p>
+    {% if order.rejection_reason %}
+      <p class="mb-1 text-danger"><strong>Қабылдамау себебі:</strong> {{ order.rejection_reason }}</p>
+    {% endif %}
+    <p class="mb-0 text-muted"><small>Құрылды: {{ order.created_at|date:"Y-m-d H:i" }}</small></p>
+  </div>
+
+  {% if order.delivery_photo %}
+  <div class="card card-body mt-4">
+    <h5 class="mb-2"><i class="bi bi-image text-primary"></i> Жеткізу фотосы</h5>
+    <div class="row g-3 align-items-center">
+      <div class="col-12 col-md-6">
+        <img src="{{ order.delivery_photo.url }}" alt="Жеткізу фото #{{ order.id }}" class="img-fluid rounded shadow-sm">
+      </div>
+      <div class="col-12 col-md-6">
+        <p class="mb-1 text-muted small">Бұл фото әкімші тапсырысты «Жеткізілді» деп жаңартқан кезде тіркелді.</p>
+        <p class="mb-0"><span class="badge bg-light text-dark"><i class="bi bi-check-circle text-success"></i> Тауар жеткізілгенін растайтын фото</span></p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if order.route and order.route.origin_lat %}
+  <div class="card card-body mt-4">
+    <h5 class="mb-2"><i class="bi bi-map text-primary"></i> Маршрут картада</h5>
+    <div id="order-detail-map" style="height: 360px; border-radius: 8px;"></div>
+    <p id="order-detail-map-caption" class="text-muted small mt-2 mb-0"></p>
+  </div>
+  {% endif %}
+
+  {% if feedbacks %}
+  <div class="card card-body mt-4">
+    <h5 class="mb-2"><i class="bi bi-chat-left-text text-primary"></i> Сіз қалдырған пікірлер</h5>
+    <ul class="list-unstyled mb-0">
+      {% for fb in feedbacks %}
+        <li class="mb-3 border rounded p-2 bg-light">
+          <div class="d-flex justify-content-between">
+            <div>
+              <span class="text-warning">
+                {% for i in "12345"|slice:":fb.rating" %}<i class="bi bi-star-fill"></i>{% endfor %}
+              </span>
+            </div>
+            <small class="text-muted">{{ fb.created_at|date:"Y-m-d H:i" }}</small>
+          </div>
+          <p class="mb-1 mt-1">{{ fb.text }}</p>
+          {% if fb.photo %}
+            <img src="{{ fb.photo.url }}" alt="Feedback photo" class="img-fluid rounded mt-1" style="max-height: 160px;">
+          {% endif %}
+          {% if fb.admin_reply %}
+            <div class="mt-2 small text-muted">
+              <strong><i class="bi bi-reply"></i> Әкімші жауабы:</strong> {{ fb.admin_reply }}
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <div class="mt-3">
+    <a class="btn btn-outline-secondary" href="{% url 'orders:list' %}"><i class="bi bi-arrow-left"></i> Тізімге қайту</a>
+  </div>
+{% endblock %}
+{% block extra_js %}
+  {% if order.route and order.route.origin_lat %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function() {
+      var mapEl = document.getElementById('order-detail-map');
+      var captionEl = document.getElementById('order-detail-map-caption');
+      if (!mapEl) return;
+      var map = L.map('order-detail-map').setView([43.2, 74.0], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+      var routeId = {{ order.route.id }};
+      fetch('/cargo/routes/' + routeId + '/map/')
+        .then(function(r) {
+          if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || 'Қате'); });
+          return r.json();
+        })
+        .then(function(data) {
+          var polyline = L.polyline(data.polyline, { color: '#d97706', weight: 4 });
+          var start = L.marker(data.origin).bindPopup(data.origin_name || 'Шығу');
+          var end = L.marker(data.destination).bindPopup(data.destination_name || 'Келу');
+          L.layerGroup([polyline, start, end]).addTo(map);
+          map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+          captionEl.textContent = (data.origin_name + ' → ' + data.destination_name) + (data.distance_km ? ' • ' + data.distance_km + ' км' : '');
+        })
+        .catch(function(err) { captionEl.textContent = err.message || 'Карта жүктелу қатесі.'; });
+    })();
+  </script>
+  {% endif %}
+{% endblock %}
+

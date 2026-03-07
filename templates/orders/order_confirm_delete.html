@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Өшіру{% endblock %}
+{% block content %}
+  <h2 class="mb-3">Тапсырысты өшіру</h2>
+  <div class="alert alert-warning">
+    Сіз расымен <strong>#{{ order.id }}</strong> тапсырысын өшіргіңіз келе ме?
+  </div>
+  <form method="post" action="{% url 'orders:delete' order.id %}">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Иә, өшіремін</button>
+    <a class="btn btn-outline-secondary" href="{% url 'orders:detail' order.id %}">Жоқ</a>
+  </form>
+{% endblock %}
+
