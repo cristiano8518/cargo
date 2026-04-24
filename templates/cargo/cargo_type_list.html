@@ -117,6 +117,9 @@
 {% block extra_js %}
   <script>
     (function() {
+      function t(key) {
+        return (window.__cargoI18n && window.__cargoI18n.t) ? window.__cargoI18n.t(key) : key;
+      }
       var cargoMap = [
         { keys: ['ешкі', 'коза', 'goat'], html: '🐐' },
         { keys: ['сиыр', 'корова', 'cow'], html: '🐄' },
@@ -154,6 +157,11 @@
         if (emoji) {
           animEl.className = 'cargo-anim-emoji js-cargo-anim';
           animEl.textContent = emoji;
+        }
+        var title = card.querySelector('.card-title');
+        if (title) {
+          var raw = (title.textContent || '').trim();
+          if (raw) title.textContent = t(raw);
         }
       });
 

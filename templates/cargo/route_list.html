@@ -12,7 +12,7 @@
 
   <div class="card card-body mb-4">
     <h5 class="mb-2"><i class="bi bi-map"></i> Карта</h5>
-    <p class="text-muted small mb-2">Кестеден маршрутты таңдап «Картада көрсету» басыңыз — немесе <strong>«Маршрут құру»</strong> басып картада екі нүктені таңдаңыз.</p>
+    <p class="text-muted small mb-2" data-i18n-html="Кестеден маршрутты таңдап «Картада көрсету» басыңыз — немесе «Маршрут құру» басып картада екі нүктені таңдаңыз.">Кестеден маршрутты таңдап «Картада көрсету» басыңыз — немесе <strong>«Маршрут құру»</strong> басып картада екі нүктені таңдаңыз.</p>
     <div id="route-map" style="height: 380px; border-radius: 8px; background: #e9ecef;"></div>
     <div id="route-map-caption" class="mt-2 text-muted small"></div>
     <div id="route-map-add-order" class="mt-2 d-none">
@@ -114,6 +114,9 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (function() {
+      function t(key) {
+        return (window.__cargoI18n && window.__cargoI18n.t) ? window.__cargoI18n.t(key) : key;
+      }
       var mapEl = document.getElementById('route-map');
       if (!mapEl) return;
       var map = L.map('route-map').setView([43.2, 74.0], 4);
@@ -139,7 +142,7 @@
           map.removeLayer(currentLayer);
           currentLayer = null;
         }
-        captionEl.textContent = 'Маршрутты таңдаңыз немесе «Маршрут құру» басыңыз.';
+        captionEl.textContent = t('Маршрутты таңдаңыз немесе «Маршрут құру» басыңыз.');
         if (addOrderWrap) addOrderWrap.classList.add('d-none');
       }
 
@@ -157,8 +160,8 @@
         exitDrawMode();
         if (currentLayer) map.removeLayer(currentLayer);
         var polyline = L.polyline(data.polyline, { color: '#0d6efd', weight: 4 });
-        var start = L.marker(data.origin).bindPopup(data.origin_name || 'Шығу');
-        var end = L.marker(data.destination).bindPopup(data.destination_name || 'Келу');
+        var start = L.marker(data.origin).bindPopup(data.origin_name || t('Шығу'));
+        var end = L.marker(data.destination).bindPopup(data.destination_name || t('Келу'));
         currentLayer = L.layerGroup([polyline, start, end]).addTo(map);
         map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
         captionEl.textContent = (data.origin_name + ' → ' + data.destination_name) + (data.distance_km ? ' • ' + data.distance_km + ' км' : '');
@@ -178,7 +181,7 @@
         exitDrawMode();
         drawMode = true;
         captionEl.textContent = '';
-        customStatus.textContent = 'Картада алдымен шығу пунктіні, содан келу пунктіні басыңыз.';
+        customStatus.textContent = t('Картада алдымен шығу пунктіні, содан келу пунктіні басыңыз.');
       });
 
       document.getElementById('btn-reset-draw').addEventListener('click', function() {
@@ -192,9 +195,9 @@
         var m = L.marker(e.latlng).addTo(map).bindPopup(drawPoints.length === 1 ? 'Шығу' : 'Келу');
         drawMarkers.push(m);
         if (drawPoints.length === 1) {
-          customStatus.textContent = 'Енді келу пунктіні басыңыз.';
+          customStatus.textContent = t('Енді келу пунктіні басыңыз.');
         } else {
-          customStatus.textContent = 'Жүктелуде…';
+          customStatus.textContent = t('Жүктелуде…');
           var url = '/cargo/routes/from-points/?lat1=' + drawPoints[0][0] + '&lng1=' + drawPoints[0][1] + '&lat2=' + drawPoints[1][0] + '&lng2=' + drawPoints[1][1];
           fetch(url)
             .then(function(r) { return r.json(); })
@@ -206,7 +209,7 @@
               if (drawPolyline) map.removeLayer(drawPolyline);
               drawPolyline = L.polyline(data.polyline || drawPoints, { color: '#198754', weight: 4 }).addTo(map);
               map.fitBounds(drawPolyline.getBounds(), { padding: [20, 20] });
-              customStatus.textContent = 'Қашықтық пен баға есептелді.';
+              customStatus.textContent = t('Қашықтық пен баға есептелді.');
               document.getElementById('custom-distance-text').textContent = data.distance_km != null ? data.distance_km : '—';
               document.getElementById('custom-price-text').textContent = data.estimated_price != null ? data.estimated_price : '—';
               document.getElementById('custom-origin-lat').value = drawPoints[0][0];
@@ -216,7 +219,7 @@
               document.getElementById('custom-distance-km').value = data.distance_km != null ? data.distance_km : '';
               customResult.classList.remove('d-none');
             })
-            .catch(function() { customStatus.textContent = 'Жүктелу қатесі.'; });
+            .catch(function() { customStatus.textContent = t('Жүктелу қатесі.'); });
         }
       });
 
@@ -229,14 +232,14 @@
           btn.disabled = true;
           fetch(url)
             .then(function(r) {
-              if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || 'Қате'); });
+              if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || t('Қате')); });
               return r.json();
             })
             .then(function(data) {
               showRoute(data);
             })
             .catch(function(err) {
-              captionEl.textContent = err.message || 'Жол жүктелу қатесі.';
+              captionEl.textContent = err.message || t('Жол жүктелу қатесі.');
             })
             .finally(function() { btn.disabled = false; });
         });
