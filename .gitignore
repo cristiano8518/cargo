@@ -25,3 +25,6 @@ db.sqlite3
 
 # Python cache
 *.sqlite3
+
+# Collected static (build artifact)
+staticfiles/
