@@ -1,47 +1,85 @@
 {% extends "base.html" %}
 {% block title %}Жүк түрлері{% endblock %}
 {% block content %}
-<h2 class="mb-3"><i class="bi bi-list-ul text-primary"></i> Жүк түрлері</h2>
-
-<form method="get" class="card card-body mb-3">
-  <div class="row g-2">
-    <div class="col-md-10">
-      <input type="text" name="q" class="form-control" value="{{ q }}" placeholder="Жүк түрін іздеу" />
-    </div>
-    <div class="col-md-2 d-grid">
-      <button type="submit" class="btn btn-primary">Іздеу</button>
-    </div>
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-list-ul text-primary"></i> Жүк түрлері</h2>
+    <a class="btn btn-outline-primary" href="/admin/cargo/cargotype/"><i class="bi bi-gear"></i> Админда басқару</a>
   </div>
-</form>
 
-<div class="row g-3">
-  {% for item in page_obj %}
-  <div class="col-md-6 col-lg-4">
-    <div class="card h-100">
-      <div class="card-body">
-        <h5 class="card-title">{{ item.name }}</h5>
-        <p class="text-muted mb-2">{{ item.description|default:"Сипаттама жоқ" }}</p>
-        <p class="mb-3"><strong>{{ item.price_per_kg }}</strong> тг/кг</p>
-        <a href="{% url 'orders:create' %}?cargo_type={{ item.id }}" class="btn btn-sm btn-outline-primary">Таңдау</a>
+  <form class="card card-body mb-3" method="get" action="{% url 'cargo:types' %}">
+    <div class="row g-2">
+      <div class="col-12 col-md-9">
+        <input
+          id="cargo-filter-input"
+          class="form-control"
+          name="q"
+          type="text"
+          value="{{ q }}"
+          placeholder="Іздеу (атауы/сипаттама)"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-12 col-md-3 d-grid">
+        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i> Іздеу</button>
       </div>
     </div>
-  </div>
-  {% empty %}
-  <div class="col-12"><div class="alert alert-info">Жүк түрі табылмады.</div></div>
-  {% endfor %}
-</div>
+  </form>
 
-{% if page_obj.has_other_pages %}
-<nav class="mt-3">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
-    {% endif %}
-    <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
-    {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
+  {% if page_obj.object_list %}
+    <div class="row g-3">
+      {% for ct in page_obj.object_list %}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ ct.name }}</h5>
+              <p class="card-text text-muted mb-2">{{ ct.description|default:"-" }}</p>
+              <div class="fw-semibold"><i class="bi bi-currency-exchange text-success"></i> {{ ct.price_per_kg }} тг / кг</div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <nav class="mt-3" aria-label="Pagination">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Алдыңғы</span></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Келесі</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% else %}
+    <div class="alert alert-info">Жүк түрі табылмады. Админ панельден қосып көріңіз.</div>
+  {% endif %}
+{% endblock %}
+{% block extra_js %}
+  <script>
+    (function() {
+      var input = document.getElementById('cargo-filter-input');
+      if (!input) return;
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.card .card-title')).map(function(title) {
+        return {
+          el: title.closest('.col-12'),
+          text: (title.textContent || '').toLowerCase()
+        };
+      });
+      input.addEventListener('input', function() {
+        var val = (input.value || '').toLowerCase().trim();
+        cards.forEach(function(item) {
+          if (!val || item.text.indexOf(val) !== -1) {
+            item.el.style.display = '';
+          } else {
+            item.el.style.display = 'none';
+          }
+        });
+      });
+    })();
+  </script>
 {% endblock %}
