@@ -142,7 +142,11 @@
       function ensureMap() {
         if (!map) {
           map = L.map('admin-route-map').setView([43.2, 74.0], 4);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+          }).addTo(map);
         }
         if (currentLayer) { map.removeLayer(currentLayer); currentLayer = null; }
       }
