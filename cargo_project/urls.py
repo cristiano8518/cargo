@@ -34,5 +34,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('api/', include('cargo_project.api_urls')),
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Media files (user uploads) should remain accessible in all environments.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
