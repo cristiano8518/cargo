@@ -117,8 +117,10 @@
       var mapEl = document.getElementById('route-map');
       if (!mapEl) return;
       var map = L.map('route-map').setView([43.2, 74.0], 4);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
       }).addTo(map);
       var captionEl = document.getElementById('route-map-caption');
       var addOrderWrap = document.getElementById('route-map-add-order');
