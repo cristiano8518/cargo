@@ -58,8 +58,13 @@ def order_list(request):
 
 @login_required
 def order_detail(request, pk: int):
-    order = get_object_or_404(Order.objects.select_related("route", "cargo_type"), pk=pk, user=request.user)
-    feedbacks = Feedback.objects.filter(user=request.user, order=order).order_by("-created_at")
+    qs = Order.objects.select_related("route", "cargo_type")
+    if is_admin_user(request.user):
+        order = get_object_or_404(qs, pk=pk)
+        feedbacks = Feedback.objects.filter(order=order).order_by("-created_at")
+    else:
+        order = get_object_or_404(qs, pk=pk, user=request.user)
+        feedbacks = Feedback.objects.filter(user=request.user, order=order).order_by("-created_at")
     return render(request, "orders/order_detail.html", {"order": order, "feedbacks": feedbacks})
 
 
