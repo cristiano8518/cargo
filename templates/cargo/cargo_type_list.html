@@ -1,301 +1,47 @@
 {% extends "base.html" %}
-<<<<<<< HEAD
-{% block title %}Жүк түрлері — Карго{% endblock %}
-{% block extra_css %}
-<style>
-  .cargo-types-hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-    border-radius: 16px;
-    padding: 2rem 2.5rem;
-    margin-bottom: 2rem;
-    color: #fff;
-  }
-  .cargo-types-hero h2 { color: #fff; font-weight: 700; margin-bottom: 0.5rem; }
-  .cargo-types-hero .lead { color: rgba(255,255,255,0.85); margin: 0; }
-  .cargo-type-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.25s ease;
-    height: 100%;
-  }
-  .cargo-type-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
-    border-color: #f59e0b;
-  }
-  .cargo-type-card .card-icon {
-    width: 48px; height: 48px;
-    background: linear-gradient(135deg, rgba(217,119,6,0.15) 0%, rgba(245,158,11,0.1) 100%);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    color: #d97706; font-size: 1.5rem;
-  }
-  .cargo-type-card .price-tag {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-    color: #fff; font-weight: 700; padding: 0.4rem 0.9rem;
-    border-radius: 10px; font-size: 1rem;
-  }
-  .cargo-type-card .category-badge {
-    font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.05em; padding: 0.25rem 0.6rem;
-    border-radius: 6px; background: #f1f5f9; color: #64748b;
-  }
-  .cargo-type-card {
-    cursor: pointer;
-    user-select: none;
-  }
-  .cargo-type-card.selected {
-    border: 2px solid #d97706;
-    box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2);
-    background: linear-gradient(180deg, #fffbeb 0%, #fff 100%);
-  }
-  .cargo-type-card .select-check {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 24px;
-    height: 24px;
-    border: 2px solid #94a3b8;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    background: #fff;
-    transition: all 0.2s;
-  }
-  .cargo-type-card.selected .select-check {
-    background: #d97706;
-    border-color: #d97706;
-  }
-  .cargo-type-card .select-check i { font-size: 0.9rem; }
-  .cargo-type-card .card-body { position: relative; }
-  .cargo-type-card .btn-order-type {
-    margin-top: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .cargo-type-card:hover .btn-order-type,
-  .cargo-type-card.selected .btn-order-type { opacity: 1; }
-  .selected-bar {
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    color: #fff;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    margin-top: 1.5rem;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-  }
-  .selected-bar.visible { display: flex; }
-</style>
-{% endblock %}
-{% block content %}
-  <div class="cargo-types-hero">
-    <h2><i class="bi bi-box-seam me-2" style="color:#fbbf24"></i> Жүк түрлері</h2>
-    <p class="lead">Мал, тауарлар және басқа жүк түрлері — баға мен сипаттамалар</p>
-    <a class="btn btn-light btn-sm mt-2" href="/admin/cargo/cargotype/" target="_blank"><i class="bi bi-gear"></i> Админда басқару</a>
-  </div>
-
-  <form class="card card-body mb-4" method="get" action="{% url 'cargo:types' %}">
-    <div class="row g-2 align-items-center">
-      <div class="col-12 col-md-9">
-        <div class="input-group">
-          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-          <input id="cargo-filter-input" class="form-control border-start-0 ps-0" name="q" type="text"
-            value="{{ q }}" placeholder="Іздеу (атауы немесе сипаттама)" autocomplete="off" />
-        </div>
-      </div>
-      <div class="col-12 col-md-3 d-grid">
-        <button class="btn btn-primary" type="submit"><i class="bi bi-search me-2"></i>Іздеу</button>
-=======
 {% block title %}Жүк түрлері{% endblock %}
 {% block content %}
-  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
-    <h2 class="mb-0"><i class="bi bi-list-ul text-primary"></i> Жүк түрлері</h2>
-    <a class="btn btn-outline-primary" href="/admin/cargo/cargotype/"><i class="bi bi-gear"></i> Админда басқару</a>
+<h2 class="mb-3"><i class="bi bi-list-ul text-primary"></i> Жүк түрлері</h2>
+
+<form method="get" class="card card-body mb-3">
+  <div class="row g-2">
+    <div class="col-md-10">
+      <input type="text" name="q" class="form-control" value="{{ q }}" placeholder="Жүк түрін іздеу" />
+    </div>
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-primary">Іздеу</button>
+    </div>
   </div>
+</form>
 
-  <form class="card card-body mb-3" method="get" action="{% url 'cargo:types' %}">
-    <div class="row g-2">
-      <div class="col-12 col-md-9">
-        <input
-          id="cargo-filter-input"
-          class="form-control"
-          name="q"
-          type="text"
-          value="{{ q }}"
-          placeholder="Іздеу (атауы/сипаттама)"
-          autocomplete="off"
-        />
-      </div>
-      <div class="col-12 col-md-3 d-grid">
-        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i> Іздеу</button>
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
+<div class="row g-3">
+  {% for item in page_obj %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ item.name }}</h5>
+        <p class="text-muted mb-2">{{ item.description|default:"Сипаттама жоқ" }}</p>
+        <p class="mb-3"><strong>{{ item.price_per_kg }}</strong> тг/кг</p>
+        <a href="{% url 'orders:create' %}?cargo_type={{ item.id }}" class="btn btn-sm btn-outline-primary">Таңдау</a>
       </div>
     </div>
-  </form>
+  </div>
+  {% empty %}
+  <div class="col-12"><div class="alert alert-info">Жүк түрі табылмады.</div></div>
+  {% endfor %}
+</div>
 
-  {% if page_obj.object_list %}
-<<<<<<< HEAD
-    <div class="row g-4" id="cargo-types-row">
-      {% for ct in page_obj.object_list %}
-        <div class="col-12 col-sm-6 col-lg-4 cargo-type-col">
-          <div class="card cargo-type-card h-100" data-id="{{ ct.id }}" data-name="{{ ct.name }}">
-            <div class="card-body p-4">
-              <div class="select-check"><i class="bi bi-check-lg d-none"></i></div>
-              <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="card-icon"><i class="bi bi-box"></i></div>
-                <span class="category-badge">{{ ct.get_category_display }}</span>
-              </div>
-              <h5 class="card-title fw-bold mb-2" style="color:#1e293b">{{ ct.name }}</h5>
-              <p class="card-text text-muted small mb-3" style="min-height:2.5em">{{ ct.description|default:"—"|truncatewords:15 }}</p>
-              <div class="d-flex align-items-center justify-content-between pt-2 border-top">
-                <span class="price-tag">{{ ct.price_per_kg }} тг/кг</span>
-              </div>
-              <a href="{% url 'orders:create' %}?cargo_type={{ ct.id }}" class="btn btn-primary btn-sm w-100 btn-order-type" onclick="event.stopPropagation();">
-                <i class="bi bi-cart-plus me-1"></i> Тапсырыс беру
-              </a>
-=======
-    <div class="row g-3">
-      {% for ct in page_obj.object_list %}
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">{{ ct.name }}</h5>
-              <p class="card-text text-muted mb-2">{{ ct.description|default:"-" }}</p>
-              <div class="fw-semibold"><i class="bi bi-currency-exchange text-success"></i> {{ ct.price_per_kg }} тг / кг</div>
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-
-<<<<<<< HEAD
-    <div class="selected-bar" id="selected-bar">
-      <span class="d-flex align-items-center gap-2">
-        <i class="bi bi-check2-square"></i>
-        <span id="selected-count">0</span> таңдалды
-        <span id="selected-names" class="opacity-75 small"></span>
-      </span>
-      <a href="#" id="selected-order-btn" class="btn btn-warning btn-sm">
-        <i class="bi bi-cart-plus me-1"></i> Тапсырыс беру (бірінші таңдалған)
-      </a>
-    </div>
-
-    <nav class="mt-4" aria-label="Pagination">
-      <ul class="pagination justify-content-center">
-=======
-    <nav class="mt-3" aria-label="Pagination">
-      <ul class="pagination">
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-        {% if page_obj.has_previous %}
-          <li class="page-item"><a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
-        {% else %}
-          <li class="page-item disabled"><span class="page-link">Алдыңғы</span></li>
-        {% endif %}
-        <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
-        {% if page_obj.has_next %}
-          <li class="page-item"><a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
-        {% else %}
-          <li class="page-item disabled"><span class="page-link">Келесі</span></li>
-        {% endif %}
-      </ul>
-    </nav>
-  {% else %}
-<<<<<<< HEAD
-    <div class="alert alert-info d-flex align-items-center">
-      <i class="bi bi-info-circle fs-4 me-3"></i>
-      <div>
-        <strong>Жүк түрі табылмады.</strong> Админ панельден қосып көріңіз.
-      </div>
-    </div>
-=======
-    <div class="alert alert-info">Жүк түрі табылмады. Админ панельден қосып көріңіз.</div>
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-  {% endif %}
-{% endblock %}
-{% block extra_js %}
-  <script>
-    (function() {
-      var input = document.getElementById('cargo-filter-input');
-<<<<<<< HEAD
-      var cols = document.querySelectorAll('.cargo-type-col');
-      if (input && cols.length) {
-        input.addEventListener('input', function() {
-          var val = (input.value || '').toLowerCase().trim();
-          cols.forEach(function(col) {
-            var title = (col.querySelector('.card-title') || {}).textContent || '';
-            var desc = (col.querySelector('.card-text') || {}).textContent || '';
-            var show = !val || title.toLowerCase().indexOf(val) !== -1 || desc.toLowerCase().indexOf(val) !== -1;
-            col.style.display = show ? '' : 'none';
-          });
-        });
-      }
-
-      var cards = document.querySelectorAll('.cargo-type-card');
-      var bar = document.getElementById('selected-bar');
-      var countEl = document.getElementById('selected-count');
-      var namesEl = document.getElementById('selected-names');
-      var orderBtn = document.getElementById('selected-order-btn');
-      var orderUrlBase = '{% url "orders:create" %}';
-
-      function updateBar() {
-        var selected = document.querySelectorAll('.cargo-type-card.selected');
-        var ids = [];
-        var names = [];
-        selected.forEach(function(card) {
-          ids.push(card.getAttribute('data-id'));
-          names.push(card.getAttribute('data-name'));
-        });
-        if (selected.length) {
-          bar.classList.add('visible');
-          countEl.textContent = selected.length;
-          namesEl.textContent = names.slice(0, 3).join(', ') + (names.length > 3 ? '...' : '');
-          orderBtn.href = orderUrlBase + '?cargo_type=' + ids[0];
-        } else {
-          bar.classList.remove('visible');
-        }
-      }
-
-      cards.forEach(function(card) {
-        card.addEventListener('click', function(e) {
-          if (e.target.closest('a')) return;
-          card.classList.toggle('selected');
-          var check = card.querySelector('.select-check i');
-          if (check) check.classList.toggle('d-none', !card.classList.contains('selected'));
-          updateBar();
-        });
-        var check = card.querySelector('.select-check i');
-        if (check) check.classList.add('d-none');
-=======
-      if (!input) return;
-      var cards = Array.prototype.slice.call(document.querySelectorAll('.card .card-title')).map(function(title) {
-        return {
-          el: title.closest('.col-12'),
-          text: (title.textContent || '').toLowerCase()
-        };
-      });
-      input.addEventListener('input', function() {
-        var val = (input.value || '').toLowerCase().trim();
-        cards.forEach(function(item) {
-          if (!val || item.text.indexOf(val) !== -1) {
-            item.el.style.display = '';
-          } else {
-            item.el.style.display = 'none';
-          }
-        });
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-      });
-    })();
-  </script>
+{% if page_obj.has_other_pages %}
+<nav class="mt-3">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
+    {% endif %}
+    <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}

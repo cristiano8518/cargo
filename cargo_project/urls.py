@@ -4,6 +4,7 @@ URL configuration for cargo_project (Карго жеткізу веб-сайты
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import path, include
 from django.shortcuts import render, redirect
 
@@ -19,7 +20,12 @@ def home(request):
     return render(request, 'home.html')
 
 
+def health(request):
+    return JsonResponse({"status": "ok"})
+
+
 urlpatterns = [
+    path("health/", health),
     path('admin/', admin.site.urls),
     path('', home),
     path('users/', include('users.urls')),

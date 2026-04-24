@@ -1,18 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Өшіру{% endblock %}
+{% block title %}Тапсырысты өшіру{% endblock %}
 {% block content %}
-  <h2 class="mb-3">Тапсырысты өшіру</h2>
-  <div class="alert alert-warning">
-    Сіз расымен <strong>#{{ order.id }}</strong> тапсырысын өшіргіңіз келе ме?
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card border-danger shadow-sm">
+      <div class="card-body">
+        <h4 class="text-danger mb-3"><i class="bi bi-trash3"></i> Тапсырысты өшіру</h4>
+        <p class="mb-3">Сіз расымен <strong>#{{ order.id }}</strong> тапсырысын өшіргіңіз келе ме?</p>
+        <form method="post" action="{% url 'orders:delete' order.id %}" class="d-flex gap-2">
+          {% csrf_token %}
+          <button class="btn btn-danger" type="submit">Иә, өшіру</button>
+          <a class="btn btn-outline-secondary" href="{% url 'orders:detail' order.id %}">Болдырмау</a>
+        </form>
+      </div>
+    </div>
   </div>
-<<<<<<< HEAD
-  <form method="post" action="{% url 'orders:delete' order.id %}">
-=======
-  <form method="post">
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-    {% csrf_token %}
-    <button class="btn btn-danger" type="submit">Иә, өшіремін</button>
-    <a class="btn btn-outline-secondary" href="{% url 'orders:detail' order.id %}">Жоқ</a>
-  </form>
+</div>
 {% endblock %}
-

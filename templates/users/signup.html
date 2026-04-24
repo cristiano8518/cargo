@@ -1,34 +1,55 @@
 {% extends "base.html" %}
 {% block title %}Тіркелу{% endblock %}
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-6 col-lg-5">
-      <h2 class="mb-3"><i class="bi bi-person-plus text-primary"></i> Тіркелу</h2>
-      {% if form.non_field_errors %}
-        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ form.non_field_errors }}</div>
-      {% endif %}
-<<<<<<< HEAD
-      <form method="post" class="card card-body" action="{% url 'users:signup' %}">
-=======
-      <form method="post" class="card card-body" action="">
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-        {% csrf_token %}
-        {% for field in form %}
-          <div class="mb-2">
-            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}
-              <div class="text-danger small">{{ field.errors }}</div>
-            {% endif %}
-            {% if field.help_text and not field.errors %}
-              <div class="form-text">{{ field.help_text }}</div>
-            {% endif %}
-          </div>
-        {% endfor %}
-        <button class="btn btn-primary mt-2 w-100" type="submit"><i class="bi bi-person-plus"></i> Тіркелу</button>
-      </form>
-      <p class="mt-3 text-center">Аккаунтыңыз бар ма? <a href="{% url 'login' %}">Кіру</a></p>
-    </div>
-  </div>
-{% endblock %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-7 col-lg-6">
+    <h2 class="mb-3"><i class="bi bi-person-plus text-primary"></i> Тіркелу</h2>
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ form.non_field_errors }}</div>
+    {% endif %}
 
+    <form method="post" class="card card-body shadow-sm" action="{% url 'users:signup' %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label" for="id_username">Логин</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="id_email">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="id_phone">Телефон</label>
+        {{ form.phone }}
+        {% if form.phone.errors %}
+          <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="id_password1">Құпиясөз</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="id_password2">Құпиясөзді қайталаңыз</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="bi bi-check2-circle me-1"></i> Тіркелу
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
