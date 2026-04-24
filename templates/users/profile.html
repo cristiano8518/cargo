@@ -20,6 +20,42 @@
           <a href="{% url 'password_change' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-key"></i> Құпиясөзді өзгерту</a>
         </div>
       </div>
+
+      <div class="card mt-3" id="settings">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-gear me-2"></i>Баптаулар</h5>
+
+          <p class="text-muted small mb-2">Тақырып</p>
+          <div class="d-flex gap-2 mb-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary flex-grow-1 js-theme-btn" data-theme="light">
+              <i class="bi bi-sun me-1"></i> Жарық
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary flex-grow-1 js-theme-btn" data-theme="dark">
+              <i class="bi bi-moon me-1"></i> Қараңғы
+            </button>
+          </div>
+
+          <hr class="my-3">
+
+          <p class="text-muted small mb-2">Тіл</p>
+          <form method="post" action="{% url 'users:set_language' %}" class="d-flex gap-2 align-items-center">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <select name="language" class="form-select form-select-sm">
+              {% for code, label in language_choices %}
+                <option value="{{ code }}" {% if request.LANGUAGE_CODE|slice:":2" == code %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+            <button class="btn btn-sm btn-primary" type="submit">Сақтау</button>
+          </form>
+
+          <hr class="my-3">
+
+          <a href="{% url 'users:guide' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-book me-1"></i> Нұсқаулық кітапша
+          </a>
+        </div>
+      </div>
     </div>
 
     <div class="col-12 col-lg-8">
@@ -86,6 +122,7 @@
           {% if user.bio %}<p class="mb-0"><strong>Өзі туралы:</strong> {{ user.bio }}</p>{% endif %}
         </div>
       </div>
+
     </div>
   </div>
 {% endblock %}

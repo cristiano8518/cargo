@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ guide.title }}{% endblock %}
+{% block extra_css %}
+<style>
+  .guide-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #334155 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
+  .guide-card {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+  .guide-step-title {
+    font-weight: 700;
+    margin-bottom: .35rem;
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="guide-hero mb-4">
+  <h2 class="mb-2"><i class="bi bi-book me-2"></i>{{ guide.title }}</h2>
+  <p class="mb-0 opacity-75">{{ guide.intro }}</p>
+</div>
+
+<div class="card guide-card">
+  <div class="card-body p-4">
+    <div class="row g-3">
+      {% for title, text in guide.sections %}
+      <div class="col-12">
+        <div class="p-3 border rounded-3 bg-light-subtle">
+          <div class="guide-step-title">{{ title }}</div>
+          <div class="text-muted">{{ text }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
