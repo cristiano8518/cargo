@@ -1,31 +1,60 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}Басты бет — Карго{% endblock %}
 {% block content %}
-<<<<<<< HEAD
-  <div class="hero-cargo p-4 p-lg-5 mb-5 rounded">
-    <div class="col-lg-9 px-0">
-      <h1 class="display-5 mb-3"><i class="bi bi-truck"></i> Карго жеткізу</h1>
-      <p class="lead mb-4" style="font-size: 1.15rem; color: rgba(255,255,255,0.92);">
-        Тапсырыс беріңіз, статусын бақылаңыз, баға мен маршруттарды қараңыз.<br>
-        <span style="font-size: 0.95rem; color: rgba(255,255,255,0.7);">Байерлік қызмет — сенімді жеткізу</span>
-      </p>
-      <p class="mb-0 d-flex flex-wrap gap-2">
-=======
-  <div class="hero-cargo p-4 p-md-5 mb-4 rounded">
-    <div class="col-lg-8 px-0">
-      <h1 class="display-6 mb-3"><i class="bi bi-truck text-primary"></i> Карго жеткізу (Байерлік қызмет)</h1>
-      <p class="lead my-3">
-        Тапсырыс беріңіз, статусын бақылаңыз, баға мен маршруттарды қараңыз.
-      </p>
-      <p class="lead mb-0">
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-        {% if user.is_authenticated %}
-          <a href="/orders/" class="btn btn-primary btn-lg"><i class="bi bi-box-seam"></i> Тапсырыстарға өту</a>
-        {% else %}
-          <a href="{% url 'users:signup' %}" class="btn btn-primary btn-lg"><i class="bi bi-person-plus"></i> Тіркелу</a>
-          <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg"><i class="bi bi-box-arrow-in-right"></i> Кіру</a>
-        {% endif %}
-      </p>
+<div class="hero-cargo p-4 p-lg-5 mb-5 rounded">
+  <div class="col-lg-9 px-0">
+    <h1 class="display-5 mb-3"><i class="bi bi-truck"></i> Карго жеткізу</h1>
+    <p class="lead mb-4" style="font-size: 1.15rem; color: rgba(255,255,255,0.92);">
+      Тапсырыс беріңіз, статусын бақылаңыз, баға мен маршруттарды қараңыз.<br>
+      <span style="font-size: 0.95rem; color: rgba(255,255,255,0.7);">Байерлік қызмет — сенімді жеткізу</span>
+    </p>
+    <p class="mb-0 d-flex flex-wrap gap-2">
+      {% if user.is_authenticated %}
+      <a class="btn btn-light btn-lg" href="{% url 'users:dashboard' %}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a class="btn btn-outline-light btn-lg" href="{% url 'orders:create' %}">
+        <i class="bi bi-plus-circle"></i> Тапсырыс беру
+      </a>
+      {% else %}
+      <a class="btn btn-light btn-lg" href="{% url 'users:signup' %}">
+        <i class="bi bi-person-plus"></i> Тіркелу
+      </a>
+      <a class="btn btn-light btn-lg" href="{% url 'login' %}">
+        <i class="bi bi-box-arrow-in-right"></i> Кіру
+      </a>
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-box-seam"></i> Тапсырыстар</h5>
+        <p class="card-text">Жаңа тапсырыс жасап, күйін қадағалаңыз.</p>
+        <a href="{% url 'orders:list' %}" class="btn btn-primary">Ашу</a>
+      </div>
     </div>
   </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-list-ul"></i> Жүк түрлері</h5>
+        <p class="card-text">Қолжетімді жүк санаттары мен бағаларын қараңыз.</p>
+        <a href="{% url 'cargo:types' %}" class="btn btn-primary">Ашу</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-geo-alt"></i> Маршруттар</h5>
+        <p class="card-text">Қалааралық бағыттарды және картаны көріңіз.</p>
+        <a href="{% url 'cargo:routes' %}" class="btn btn-primary">Ашу</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

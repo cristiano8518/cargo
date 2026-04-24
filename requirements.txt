@@ -9,9 +9,11 @@ djangorestframework-simplejwt>=5.3
 django-filter>=24.2
 django-cors-headers>=4.3
 Pillow>=10.0
+whitenoise>=6.8.0
 
 # Кейінгі қадамдар (prod/test) — соңыра қосамыз
-# gunicorn>=21.0
+gunicorn>=21.0
 # psycopg2-binary>=2.9
 # pytest-django>=4.5
 # pytest-cov>=4.1
+coverage>=7.6

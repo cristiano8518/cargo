@@ -5,11 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-<<<<<<< HEAD
 from cargo.models import CargoType, Route
-=======
-from cargo.models import Route
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 from .forms import OrderForm, OrderAdminUpdateForm, FeedbackForm
 from .models import Order, Feedback
 from users.permissions import is_admin_user
@@ -103,7 +99,6 @@ def order_create(request):
                 initial["route"] = route
             except (Route.DoesNotExist, ValueError):
                 pass
-<<<<<<< HEAD
         cargo_type_id = request.GET.get("cargo_type")
         if cargo_type_id:
             try:
@@ -111,8 +106,6 @@ def order_create(request):
                 initial["cargo_type"] = ct
             except (CargoType.DoesNotExist, ValueError):
                 pass
-=======
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
         form = OrderForm(initial=initial)
         if custom_route:
             form.fields["route"].required = False

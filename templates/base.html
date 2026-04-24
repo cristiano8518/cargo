@@ -5,22 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Карго жеткізу{% endblock %}</title>
-<<<<<<< HEAD
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-=======
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
     {% block extra_css %}{% endblock %}
   </head>
-<<<<<<< HEAD
   <body id="body-theme">
-=======
-  <body>
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
     <nav class="navbar navbar-expand-lg navbar-dark navbar-cargo">
       <div class="container">
         <a class="navbar-brand" href="/"><i class="bi bi-truck"></i> Cargo</a>
@@ -33,27 +29,8 @@
               <li class="nav-item"><a class="nav-link" href="{% url 'users:dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
             {% endif %}
             <li class="nav-item"><a class="nav-link" href="/orders/"><i class="bi bi-box-seam"></i> Тапсырыстар</a></li>
-<<<<<<< HEAD
             <li class="nav-item"><a class="nav-link" href="/cargo/types/"><i class="bi bi-list-ul"></i> Жүк түрлері</a></li>
             <li class="nav-item"><a class="nav-link" href="/cargo/routes/"><i class="bi bi-geo-alt"></i> Маршруттар</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'cargo:addresses' %}"><i class="bi bi-geo"></i> Біздің мекенжайлар</a></li>
-            {% if user.is_authenticated %}
-              <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}#settings"><i class="bi bi-gear"></i> Баптау</a></li>
-            {% endif %}
-=======
-            {% if user.is_authenticated %}
-              {% if user.role == 'admin' or user.is_staff or user.is_superuser %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'orders:admin_feedback' %}"><i class="bi bi-chat-left-text"></i> Кері байланыс</a></li>
-              {% else %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'orders:feedback' %}"><i class="bi bi-chat-left-text"></i> Кері байланыс</a></li>
-              {% endif %}
-            {% endif %}
-            {% if user.is_authenticated and user.role == 'admin' or user.is_staff or user.is_superuser %}
-              <li class="nav-item"><a class="nav-link" href="{% url 'orders:admin_list' %}"><i class="bi bi-gear"></i> Admin</a></li>
-            {% endif %}
-            <li class="nav-item"><a class="nav-link" href="/cargo/types/"><i class="bi bi-list-ul"></i> Жүк түрлері</a></li>
-            <li class="nav-item"><a class="nav-link" href="/cargo/routes/"><i class="bi bi-geo-alt"></i> Маршруттар</a></li>
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
           </ul>
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
@@ -88,24 +65,17 @@
     <footer class="footer-cargo text-center">
       <div class="container">
         <span><i class="bi bi-truck"></i> Карго жеткізу</span> — Байерлік қызмет
-<<<<<<< HEAD
-        <span class="mx-2">|</span>
-        <a href="{% url 'cargo:contact' %}" class="text-white text-decoration-none opacity-75"><i class="bi bi-telephone"></i> Байланыс</a>
-=======
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
       </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<<<<<<< HEAD
     <script>
-      (function() {
-        var theme = localStorage.getItem('cargo-theme') || 'light';
-        document.body.classList.toggle('theme-dark', theme === 'dark');
+      (function () {
+        var theme = localStorage.getItem("cargo-theme") || "light";
+        document.body.classList.toggle("theme-dark", theme === "dark");
       })();
     </script>
-=======
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
     {% block extra_js %}{% endblock %}
   </body>
 </html>
+

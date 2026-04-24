@@ -1,72 +1,110 @@
 # Карго жеткізу веб-сайты (Байерлік қызмет)
 
-Django жобасы — барлық негізгі файлдар дайын. Тек ортаны іске қосу керек.
+Django-based web application for cargo delivery workflows with roles, admin panel, and REST API.
 
----
+## Project Structure
 
-## Жоба құрылымы
-
-```
+```text
 cargo/
 ├── manage.py
 ├── requirements.txt
 ├── README.md
-├── cargo_project/       # Басты конфигурация
-│   ├── settings.py
-│   ├── urls.py
-│   ├── wsgi.py
-│   └── asgi.py
-├── users/               # Пайдаланушылар (тіркелу, кіру, рөлдер)
-├── orders/              # Тапсырыстар
-├── cargo/               # Жүк түрлері, маршруттар
+├── Dockerfile
+├── docker-compose.yml
+├── render.yaml
+├── cargo_project/        # Django project config
+├── users/                # auth/profile/roles
+├── orders/               # order workflow + feedback
+├── cargo/                # cargo types/routes/maps/contact
 ├── templates/
-└── static/
+├── static/
+├── docs/                 # operational docs
+└── load-tests/           # k6 scenarios
 ```
 
----
-
-## Орнату (3 қадам)
-
-Терминалды **c:\Users\user\cargo** папкасында ашыңыз.
-
-### 1. Виртуалды орта және Django
+## Local Setup
 
 ```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+py -3 -m pip install -r requirements.txt
+py -3 manage.py migrate
+py -3 manage.py createsuperuser
+py -3 manage.py runserver
 ```
 
-(Егер `Activate.ps1` табылмаса: **CMD** ашып `venv\Scripts\activate.bat` орындаңыз.)
+Main URLs:
 
-### 2. Дерекқор миграциясы
+- Home: `http://127.0.0.1:8000/`
+- Admin: `http://127.0.0.1:8000/admin/`
+- Health: `http://127.0.0.1:8000/health/`
+
+## API
+
+API routes are under `/api/`.
+
+- JWT: `/api/auth/token/`, `/api/auth/token/refresh/`
+- Profile: `/api/me/`
+- Orders: `/api/orders/`
+- Catalog: `/api/cargo-types/`, `/api/routes/`
+
+Detailed reference: `docs/API.md`.
+
+## Testing and Coverage
 
 ```powershell
-python manage.py makemigrations
-python manage.py migrate
+py -3 manage.py test
+py -3 -m coverage run manage.py test
+py -3 -m coverage report
 ```
 
-### 3. Админ құру және серверді іске қосу
+Detailed testing guide: `docs/TESTING.md`.
+
+## Docker
+
+Run locally with Docker:
 
 ```powershell
-python manage.py createsuperuser
-python manage.py runserver
+docker compose up --build
 ```
 
-Браузерде:
+## CI/CD
 
-- Үй беті: **http://127.0.0.1:8000/**
-- Админ: **http://127.0.0.1:8000/admin/**
+GitHub Actions workflow is configured at `.github/workflows/ci.yml`:
 
----
+- dependency install
+- `manage.py check`
+- full test run
+- coverage report
 
-## Қысқаша мүмкіндіктер
+## Render Deployment
 
-| Бөлім | Сипаттама |
-|-------|-----------|
-| **users** | Пайдаланушы моделі (рөл: user/admin), админ-панельде басқару |
-| **orders** | Тапсырыс моделі (шыққан/келу, мәртебе), админда тізім |
-| **cargo** | Жүк түрі, маршрут — админда басқару |
-| **URL** | `/`, `/admin/`, `/users/profile/`, `/orders/`, `/cargo/types/`, `/cargo/routes/` |
+Render blueprint is defined in `render.yaml`.
 
-Кейінгі қадамдар: тіркелу/кіру беттері, REST API, тестілеу, Docker, CI/CD — талаптар бойынша қосылады.
+Required env vars:
+
+- `DJANGO_SECRET_KEY`
+- `DJANGO_DEBUG=False`
+- `ALLOWED_HOSTS`
+
+Start command runs migrations and launches Gunicorn.
+
+## Monitoring and Logs
+
+- App health endpoint: `/health/`
+- Centralized logging configured in `cargo_project/settings.py`
+- Runtime logs are written to `logs/cargo.log` and console (Render logs)
+
+## Load Testing
+
+k6 smoke scenario:
+
+```powershell
+k6 run .\load-tests\k6-smoke.js
+```
+
+Use Render URL target:
+
+```powershell
+k6 run -e BASE_URL=https://your-service.onrender.com .\load-tests\k6-smoke.js
+```

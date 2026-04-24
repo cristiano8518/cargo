@@ -1,208 +1,55 @@
 {% extends "base.html" %}
-{% block title %}Admin — Тапсырыстар{% endblock %}
-{% block extra_css %}
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-{% endblock %}
+{% block title %}Админ — Тапсырыстар{% endblock %}
 {% block content %}
-  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Admin: барлық тапсырыстар</h2>
-    <a class="btn btn-outline-secondary" href="/admin/orders/order/">Django Admin</a>
-  </div>
+<h2 class="mb-3"><i class="bi bi-gear text-primary"></i> Админ тапсырыстар тізімі</h2>
 
-<<<<<<< HEAD
-  <form class="card card-body mb-3" method="get" action="{% url 'orders:admin_list' %}">
-=======
-  <form class="card card-body mb-3" method="get">
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-    <div class="row g-2">
-      <div class="col-12 col-md-5">
-        <input class="form-control" name="q" value="{{ q }}" placeholder="Іздеу: user / сипаттама / маршрут" />
-      </div>
-      <div class="col-12 col-md-3">
-        <select class="form-select" name="status">
-          <option value="">Статус (бәрі)</option>
-          {% for value,label in status_options %}
-            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-12 col-md-3">
-        <select class="form-select" name="sort">
-          {% for value,label in sort_options.items %}
-            <option value="{{ value }}" {% if sort == value %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-12 col-md-1 d-grid">
-        <button class="btn btn-outline-secondary" type="submit">OK</button>
-      </div>
+<form class="card card-body mb-3" method="get" action="{% url 'orders:admin_list' %}">
+  <div class="row g-2">
+    <div class="col-md-4"><input class="form-control" type="text" name="q" value="{{ q }}" placeholder="Іздеу" /></div>
+    <div class="col-md-3">
+      <select class="form-select" name="status">
+        <option value="">Барлық статус</option>
+        {% for value,label in status_options %}
+          <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
     </div>
-  </form>
+    <div class="col-md-3">
+      <select class="form-select" name="sort">
+        {% for value,label in sort_options.items %}
+          <option value="{{ value }}" {% if sort == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-grid"><button class="btn btn-outline-primary">Қолдану</button></div>
+  </div>
+</form>
 
+<div class="card">
   <div class="table-responsive">
-    <table class="table table-striped align-middle">
+    <table class="table table-hover mb-0">
       <thead>
         <tr>
-          <th>#</th>
-          <th>User</th>
-          <th>Маршрут</th>
-          <th>Көлік</th>
-          <th>Күні</th>
-          <th>Баға</th>
-          <th>Статус</th>
-          <th></th>
+          <th>#</th><th>Пайдаланушы</th><th>Маршрут</th><th>Баға</th><th>Статус</th><th></th>
         </tr>
       </thead>
       <tbody>
-        {% for o in page_obj.object_list %}
+        {% for order in page_obj %}
           <tr>
-            <td>{{ o.id }}</td>
-            <td>{{ o.user.username }}</td>
-            <td>
-              {{ o.origin }} → {{ o.destination }}
-              {% if o.route and o.route.origin_lat %}
-                <button type="button" class="btn btn-sm btn-outline-primary ms-1 admin-route-map" data-route-id="{{ o.route.id }}" title="Картада көрсету"><i class="bi bi-map"></i></button>
-              {% endif %}
-            </td>
-            <td>{{ o.get_vehicle_type_display }}</td>
-            <td>{{ o.requested_delivery_date|default:"-" }}</td>
-            <td>{{ o.estimated_price }}</td>
-            <td>
-              {% if o.status == 'pending' %}
-                <a class="btn btn-sm btn-warning" href="{% url 'orders:admin_decision' o.id %}">Қабылдау/Қабылдамау</a>
-              {% else %}
-                <form class="d-inline admin-status-form" method="post" action="{% url 'orders:admin_set_status' o.id %}" enctype="multipart/form-data" data-order-id="{{ o.id }}">
-                  {% csrf_token %}
-                  <select class="form-select form-select-sm d-inline-block w-auto admin-status-select" name="status">
-                    {% for value,label in status_options %}
-                      <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                  </select>
-                  <label class="btn btn-sm btn-outline-secondary ms-1 mb-0 d-none admin-photo-label">
-                    <i class="bi bi-image"></i> Фото
-                    <input type="file" name="delivery_photo" accept="image/*" class="d-none admin-photo-input">
-                  </label>
-                  <button class="btn btn-sm btn-outline-primary" type="submit">OK</button>
-                </form>
-              {% endif %}
-              {% if o.rejection_reason %}
-                <div class="small text-danger">Себеп: {{ o.rejection_reason|truncatewords:10 }}</div>
-              {% endif %}
-            </td>
+            <td>{{ order.id }}</td>
+            <td>{{ order.user.username }}</td>
+            <td>{{ order.origin }} → {{ order.destination }}</td>
+            <td>{{ order.estimated_price }} тг</td>
+            <td>{{ order.get_status_display }}</td>
             <td class="text-end">
-              <a class="btn btn-sm btn-outline-secondary" href="{% url 'orders:detail' o.id %}">Көру</a>
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'orders:admin_decision' order.id %}">Шешім</a>
             </td>
           </tr>
         {% empty %}
-          <tr><td colspan="8" class="text-muted">Тапсырыс жоқ.</td></tr>
+          <tr><td colspan="6" class="text-muted">Тапсырыс жоқ.</td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-
-  <nav aria-label="Pagination">
-    <ul class="pagination">
-      {% if page_obj.has_previous %}
-        <li class="page-item"><a class="page-link" href="?q={{ q }}&status={{ status }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
-      {% else %}
-        <li class="page-item disabled"><span class="page-link">Алдыңғы</span></li>
-      {% endif %}
-      <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
-      {% if page_obj.has_next %}
-        <li class="page-item"><a class="page-link" href="?q={{ q }}&status={{ status }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
-      {% else %}
-        <li class="page-item disabled"><span class="page-link">Келесі</span></li>
-      {% endif %}
-    </ul>
-  </nav>
-
-  <div class="modal fade" id="adminRouteMapModal" tabindex="-1" aria-labelledby="adminRouteMapModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="adminRouteMapModalLabel"><i class="bi bi-map"></i> Маршрут картада</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Жабу"></button>
-        </div>
-        <div class="modal-body">
-          <div id="admin-route-map" style="height: 400px; border-radius: 8px;"></div>
-          <p id="admin-route-map-caption" class="mt-2 text-muted small mb-0"></p>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 {% endblock %}
-{% block extra_js %}
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script>
-    (function() {
-      var modalEl = document.getElementById('adminRouteMapModal');
-      var mapContainer = document.getElementById('admin-route-map');
-      var captionEl = document.getElementById('admin-route-map-caption');
-      if (!modalEl || !mapContainer) return;
-      var map = null;
-      var currentLayer = null;
-      var pendingRouteId = null;
-
-      function ensureMap() {
-        if (!map) {
-          map = L.map('admin-route-map').setView([43.2, 74.0], 4);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
-        }
-        if (currentLayer) { map.removeLayer(currentLayer); currentLayer = null; }
-      }
-
-      function showRouteInModal(data) {
-        ensureMap();
-        var polyline = L.polyline(data.polyline, { color: '#0d6efd', weight: 4 });
-        var start = L.marker(data.origin).bindPopup(data.origin_name || 'Шығу');
-        var end = L.marker(data.destination).bindPopup(data.destination_name || 'Келу');
-        currentLayer = L.layerGroup([polyline, start, end]).addTo(map);
-        map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
-        captionEl.textContent = (data.origin_name + ' → ' + data.destination_name) + (data.distance_km ? ' • ' + data.distance_km + ' км' : '');
-      }
-
-      modalEl.addEventListener('shown.bs.modal', function() {
-        if (pendingRouteId) {
-          var id = pendingRouteId;
-          pendingRouteId = null;
-          ensureMap();
-          fetch('/cargo/routes/' + id + '/map/')
-            .then(function(r) {
-              if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || 'Қате'); });
-              return r.json();
-            })
-            .then(showRouteInModal)
-            .catch(function(err) { captionEl.textContent = err.message || 'Жол жүктелу қатесі.'; });
-        }
-      });
-
-      document.querySelectorAll('.admin-route-map').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          pendingRouteId = this.getAttribute('data-route-id');
-          captionEl.textContent = 'Жүктелуде…';
-          var modal = new bootstrap.Modal(modalEl);
-          modal.show();
-        });
-      });
-
-      document.querySelectorAll('.admin-status-form').forEach(function(form) {
-        var select = form.querySelector('.admin-status-select');
-        var label = form.querySelector('.admin-photo-label');
-        if (!select || !label) return;
-        function togglePhoto() {
-          if (select.value === 'delivered') {
-            label.classList.remove('d-none');
-          } else {
-            label.classList.add('d-none');
-            var inp = label.querySelector('.admin-photo-input');
-            if (inp) inp.value = '';
-          }
-        }
-        select.addEventListener('change', togglePhoto);
-        togglePhoto();
-      });
-    })();
-  </script>
-{% endblock %}
-

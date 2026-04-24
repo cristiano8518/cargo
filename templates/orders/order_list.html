@@ -1,228 +1,79 @@
 {% extends "base.html" %}
 {% block title %}Тапсырыстар{% endblock %}
-{% block extra_css %}
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <style>
-    tr.order-row { cursor: pointer; }
-<<<<<<< HEAD
-    tr.order-row:hover { background-color: #fffbeb !important; }
-=======
-    tr.order-row:hover { background-color: rgba(13, 110, 253, 0.06) !important; }
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-    tr.order-row td.actions { cursor: default; }
-    tr.order-row td.actions a, tr.order-row td.actions button { pointer-events: auto; }
-  </style>
-{% endblock %}
 {% block content %}
-  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
-    <h2 class="mb-0"><i class="bi bi-box-seam text-primary"></i> Тапсырыстар</h2>
-    <a class="btn btn-primary" href="{% url 'orders:create' %}"><i class="bi bi-plus-lg"></i> Жаңа тапсырыс</a>
-  </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0"><i class="bi bi-box-seam text-primary"></i> Менің тапсырыстарым</h2>
+  <a class="btn btn-primary" href="{% url 'orders:create' %}"><i class="bi bi-plus-lg me-1"></i> Жаңа тапсырыс</a>
+</div>
 
-  <form class="card card-body mb-3" method="get">
-    <div class="row g-2">
-      <div class="col-12 col-md-5">
-        <input class="form-control" name="q" value="{{ q }}" placeholder="Іздеу: сипаттама / шыққан / келу" />
-      </div>
-      <div class="col-12 col-md-3">
-        <select class="form-select" name="status">
-          <option value="">Статус (бәрі)</option>
-          {% for value,label in status_options %}
-            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-12 col-md-3">
-        <select class="form-select" name="sort">
-          {% for value,label in sort_options.items %}
-            <option value="{{ value }}" {% if sort == value %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-12 col-md-1 d-grid">
-        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
-      </div>
+<form method="get" class="card card-body mb-3">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input class="form-control" type="text" name="q" value="{{ q }}" placeholder="Іздеу (сипаттама, маршрут)" />
     </div>
-  </form>
+    <div class="col-md-3">
+      <select class="form-select" name="status">
+        <option value="">Барлық статус</option>
+        {% for value,label in status_options %}
+          <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" name="sort">
+        {% for value,label in sort_options.items %}
+          <option value="{{ value }}" {% if sort == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-outline-primary" type="submit">Қолдану</button>
+    </div>
+  </div>
+</form>
 
-  {% if page_obj.object_list %}
-    <div class="table-responsive">
-      <table class="table table-striped align-middle">
-        <thead>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Маршрут</th>
+          <th>Жүк</th>
+          <th>Баға</th>
+          <th>Статус</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in page_obj %}
           <tr>
-            <th>#</th>
-            <th>Шыққан жер</th>
-            <th>Келу жер</th>
-            <th>Жүк</th>
-            <th>Салмақ</th>
-            <th>Баға</th>
-            <th>Статус</th>
-            <th>Құрылды</th>
-            <th></th>
+            <td>{{ order.id }}</td>
+            <td>{{ order.origin }} → {{ order.destination }}</td>
+            <td>{{ order.cargo_type|default:"-" }}</td>
+            <td>{{ order.estimated_price }} тг</td>
+            <td>{{ order.get_status_display }}</td>
+            <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{% url 'orders:detail' order.id %}">Көру</a></td>
           </tr>
-        </thead>
-        <tbody>
-          {% for o in page_obj.object_list %}
-            <tr class="order-row" data-order-id="{{ o.id }}" data-route-id="{% if o.route %}{{ o.route.id }}{% endif %}" data-origin="{{ o.origin }}" data-destination="{{ o.destination }}" data-status="{{ o.status }}" data-status-display="{{ o.get_status_display }}" data-cargo="{% if o.cargo_type %}{{ o.cargo_type.name }}{% else %}-{% endif %}" data-weight="{{ o.weight_kg|default:'' }}" data-price="{{ o.estimated_price }}" data-date="{{ o.created_at|date:'Y-m-d H:i' }}" data-vehicle="{{ o.get_vehicle_type_display }}" data-delivery-date="{{ o.requested_delivery_date|default:'' }}">
-              <td>{{ o.id }}</td>
-              <td>{{ o.origin }}</td>
-              <td>{{ o.destination }}</td>
-              <td>{{ o.cargo_type|default:"-" }}</td>
-              <td>{% if o.weight_kg %}{{ o.weight_kg }} кг{% else %}-{% endif %}</td>
-              <td>{{ o.estimated_price }}</td>
-              <td><span class="badge badge-status-{{ o.status }}">{{ o.get_status_display }}</span></td>
-              <td>{{ o.created_at|date:"Y-m-d H:i" }}</td>
-              <td class="actions text-end">
-                <a class="btn btn-sm btn-outline-primary" href="{% url 'orders:detail' o.id %}">Көру</a>
-                {% if o.status == 'pending' %}
-                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'orders:update' o.id %}"><i class="bi bi-pencil"></i> Өңдеу</a>
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <nav aria-label="Pagination">
-      <ul class="pagination">
-        {% if page_obj.has_previous %}
-          <li class="page-item"><a class="page-link" href="?q={{ q }}&status={{ status }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">Алдыңғы</a></li>
-        {% else %}
-          <li class="page-item disabled"><span class="page-link">Алдыңғы</span></li>
-        {% endif %}
-
-        <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
-
-        {% if page_obj.has_next %}
-          <li class="page-item"><a class="page-link" href="?q={{ q }}&status={{ status }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">Келесі</a></li>
-        {% else %}
-          <li class="page-item disabled"><span class="page-link">Келесі</span></li>
-        {% endif %}
-      </ul>
-    </nav>
-  {% else %}
-    <div class="alert alert-info">Әзірге тапсырыс жоқ. «Жаңа тапсырыс» басыңыз.</div>
-  {% endif %}
-
-  <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title" id="orderDetailModalLabel">
-            <i class="bi bi-box-seam text-primary"></i> Тапсырыс #<span id="om-id"></span>
-            <span class="badge ms-2 badge-status-pending" id="om-status-badge"></span>
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Жабу"></button>
-        </div>
-        <div class="modal-body pt-2">
-          <div class="row g-3">
-            <div class="col-12 col-md-6">
-              <div class="card card-body h-100">
-                <h6 class="text-muted text-uppercase small mb-3">Ақпарат</h6>
-                <p class="mb-2"><i class="bi bi-geo-alt me-2 text-muted"></i><strong>Қайдан:</strong> <span id="om-origin"></span></p>
-                <p class="mb-2"><i class="bi bi-geo me-2 text-muted"></i><strong>Қайда:</strong> <span id="om-destination"></span></p>
-                <p class="mb-2"><i class="bi bi-box me-2 text-muted"></i><strong>Жүк түрі:</strong> <span id="om-cargo"></span></p>
-                <p class="mb-2"><i class="bi bi-truck me-2 text-muted"></i><strong>Көлік:</strong> <span id="om-vehicle"></span></p>
-                <p class="mb-2"><i class="bi bi-speedometer2 me-2 text-muted"></i><strong>Салмақ:</strong> <span id="om-weight"></span></p>
-                <p class="mb-2"><i class="bi bi-currency-exchange me-2 text-muted"></i><strong>Баға:</strong> <span id="om-price"></span></p>
-                <p class="mb-0"><i class="bi bi-calendar3 me-2 text-muted"></i><strong>Жеткізу күні:</strong> <span id="om-delivery"></span></p>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="card card-body h-100">
-                <h6 class="text-muted text-uppercase small mb-2">Маршрут картада</h6>
-                <div id="order-modal-map" style="height: 260px; border-radius: 8px;"></div>
-                <p id="order-modal-map-caption" class="text-muted small mt-2 mb-0"></p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer border-0">
-          <a id="om-detail-link" href="#" class="btn btn-primary"><i class="bi bi-eye"></i> Толық бет</a>
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Жабу</button>
-        </div>
-      </div>
-    </div>
+        {% empty %}
+          <tr><td colspan="6" class="text-muted">Тапсырыс жоқ.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="mt-3">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ q }}&status={{ status }}&sort={{ sort }}">Алдыңғы</a></li>
+    {% endif %}
+    <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ q }}&status={{ status }}&sort={{ sort }}">Келесі</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}
-{% block extra_js %}
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script>
-    (function() {
-      var modalEl = document.getElementById('orderDetailModal');
-      var mapContainer = document.getElementById('order-modal-map');
-      var captionEl = document.getElementById('order-modal-map-caption');
-      if (!modalEl || !mapContainer) return;
-      var map = null;
-      var currentLayer = null;
-      var pendingRouteId = null;
-
-      function ensureMap() {
-        if (!map) {
-          map = L.map('order-modal-map').setView([43.2, 74.0], 4);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
-        }
-        if (currentLayer) { map.removeLayer(currentLayer); currentLayer = null; }
-      }
-
-      function showRouteInModal(data) {
-        ensureMap();
-<<<<<<< HEAD
-        var polyline = L.polyline(data.polyline, { color: '#d97706', weight: 4 });
-=======
-        var polyline = L.polyline(data.polyline, { color: '#0d6efd', weight: 4 });
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
-        var start = L.marker(data.origin).bindPopup(data.origin_name || 'Шығу');
-        var end = L.marker(data.destination).bindPopup(data.destination_name || 'Келу');
-        currentLayer = L.layerGroup([polyline, start, end]).addTo(map);
-        map.fitBounds(polyline.getBounds(), { padding: [20, 20] });
-        captionEl.textContent = (data.origin_name + ' → ' + data.destination_name) + (data.distance_km ? ' • ' + data.distance_km + ' км' : '');
-      }
-
-      function setModalOrder(row) {
-        var id = row.getAttribute('data-order-id');
-        var routeId = (row.getAttribute('data-route-id') || '').trim();
-        document.getElementById('om-id').textContent = id;
-        document.getElementById('om-status-badge').textContent = row.getAttribute('data-status-display') || '';
-        document.getElementById('om-status-badge').className = 'badge ms-2 badge-status-' + (row.getAttribute('data-status') || 'pending');
-        document.getElementById('om-origin').textContent = row.getAttribute('data-origin') || '-';
-        document.getElementById('om-destination').textContent = row.getAttribute('data-destination') || '-';
-        document.getElementById('om-cargo').textContent = row.getAttribute('data-cargo') || '-';
-        document.getElementById('om-vehicle').textContent = row.getAttribute('data-vehicle') || '-';
-        var w = row.getAttribute('data-weight');
-        document.getElementById('om-weight').textContent = w ? w + ' кг' : '-';
-        document.getElementById('om-price').textContent = row.getAttribute('data-price') || '-';
-        document.getElementById('om-delivery').textContent = row.getAttribute('data-delivery-date') || '-';
-        document.getElementById('om-detail-link').href = '/orders/' + id + '/';
-        pendingRouteId = routeId || null;
-        captionEl.textContent = routeId ? 'Жүктелуде…' : 'Маршрут координаттары жоқ.';
-      }
-
-      modalEl.addEventListener('shown.bs.modal', function() {
-        if (pendingRouteId) {
-          var id = pendingRouteId;
-          pendingRouteId = null;
-          ensureMap();
-          fetch('/cargo/routes/' + id + '/map/')
-            .then(function(r) {
-              if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || 'Қате'); });
-              return r.json();
-            })
-            .then(showRouteInModal)
-            .catch(function(err) { captionEl.textContent = err.message || 'Карта жүктелу қатесі.'; });
-        }
-      });
-
-      document.querySelectorAll('.order-row').forEach(function(tr) {
-        tr.addEventListener('click', function(e) {
-          if (e.target.closest('a, button')) return;
-          setModalOrder(tr);
-          var modal = new bootstrap.Modal(modalEl);
-          modal.show();
-        });
-      });
-    })();
-  </script>
-{% endblock %}
-

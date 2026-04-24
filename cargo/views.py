@@ -1,11 +1,9 @@
 import json
+import logging
 import urllib.request
 import urllib.error
 
-<<<<<<< HEAD
 from django.contrib import messages
-=======
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -13,15 +11,12 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
-<<<<<<< HEAD
 from .forms import ContactForm
 from .models import CargoType, Route, ContactMessage
-=======
-from .models import CargoType, Route
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 
 OSRM_BASE = "https://router.project-osrm.org/route/v1/driving"
 PRICE_PER_KM = 50  # тг/км — шамалы баға есебі үшін
+logger = logging.getLogger(__name__)
 
 
 def cargo_type_list(request):
@@ -52,7 +47,6 @@ def route_list(request):
     return render(request, "cargo/route_list.html", {"page_obj": page_obj, "q": q})
 
 
-<<<<<<< HEAD
 # Наши адреса — 5 городов, по 2 адреса в каждом
 ADDRESSES_DATA = [
     {
@@ -118,10 +112,6 @@ def contact_page(request):
         form = ContactForm()
     recent = ContactMessage.objects.all()[:20]
     return render(request, "cargo/contact.html", {"form": form, "reviews": recent})
-
-
-=======
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
 def route_map_geojson(request, route_id):
     """Маршрут үшін жол геометриясы (картада сызу үшін). OSRM арқылы жол алынады."""
     route = get_object_or_404(Route, pk=route_id)
@@ -141,8 +131,10 @@ def route_map_geojson(request, route_id):
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read().decode())
     except urllib.error.HTTPError as e:
+        logger.warning("OSRM HTTP error for route_id=%s: %s", route.id, e)
         return JsonResponse({"error": "osrm_error", "message": str(e)}, status=502)
     except (urllib.error.URLError, TimeoutError) as e:
+        logger.warning("OSRM network error for route_id=%s: %s", route.id, e)
         return JsonResponse({"error": "osrm_error", "message": str(e)}, status=502)
 
     if data.get("code") != "Ok" or not data.get("routes"):
@@ -193,6 +185,7 @@ def route_from_points(request):
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read().decode())
     except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+        logger.warning("OSRM error for map points request: %s", e)
         return JsonResponse({"error": "osrm_error", "message": str(e)}, status=502)
     distance_km = None
     coordinates = [[lat1, lng1], [lat2, lng2]]

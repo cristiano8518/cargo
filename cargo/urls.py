@@ -6,11 +6,8 @@ app_name = "cargo"
 urlpatterns = [
     path('types/', views.cargo_type_list, name="types"),
     path('routes/', views.route_list, name="routes"),
-<<<<<<< HEAD
     path('addresses/', views.addresses_list, name="addresses"),
     path('contact/', views.contact_page, name="contact"),
-=======
->>>>>>> 8a46089c6e4ac2488b9ba8f7e0d529c789420f11
     path('routes/<int:route_id>/map/', views.route_map_geojson, name="route_map"),
     path('routes/from-points/', views.route_from_points, name="route_from_points"),
     path('routes/set-custom/', views.set_custom_route, name="set_custom_route"),
