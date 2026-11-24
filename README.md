@@ -1,110 +1,152 @@
-# Карго жеткізу веб-сайты (Байерлік қызмет)
+# Cargo Delivery Platform
 
-Django-based web application for cargo delivery workflows with roles, admin panel, and REST API.
+A Django web application for a cargo delivery / buyer service. Customers register, choose a cargo type and route, place delivery orders and follow them through a full status workflow (request → accepted → payment → in transit → delivered), while administrators review, accept or reject orders and manage the catalog from a customised admin panel. The project also exposes a JWT-secured REST API, draws delivery routes on a map using the public OSRM routing service, and comes with tests, Docker, a Render deployment blueprint, GitHub Actions CI and a k6 load test. The interface is multilingual (Kazakh, Russian, English) with per-user theme and language preferences.
 
-## Project Structure
+## Key features
 
-```text
+- **Accounts and roles** – sign-up, login/logout, `user` and `admin` roles, profile with avatar, contact and work/study details, localized password validation.
+- **Order workflow** – create, edit, delete and view orders with cargo type, route, weight and vehicle type (Gazelle, KamAZ, trailer); statuses: pending, accepted, rejected, payment pending, paid, in transit, delivered, cancelled.
+- **Admin tools** – order review with accept/reject decisions and status changes, customer feedback list, a customised Django admin (fieldsets, filters, search, bulk status actions).
+- **Catalog and maps** – cargo types, routes, pickup addresses and a contact form; route geometry from OSRM rendered on a map, including custom routes from selected points.
+- **REST API** – JWT authentication, `/api/me/`, orders, cargo types and routes with filtering, search, ordering and pagination.
+- **User preferences** – global light/dark theme and interface language (kk / ru / en).
+- **Operations** – `/health/` endpoint, console and file logging, `ensure_superuser` management command for automated deployments.
+
+## Tech stack
+
+| Area | Technologies |
+|------|--------------|
+| Backend | Python 3.12, Django 4.2, Django REST Framework, SimpleJWT, django-filter, django-cors-headers |
+| Frontend | Django templates, CSS, vanilla JavaScript |
+| Database | SQLite (default) |
+| Static / server | WhiteNoise, Gunicorn |
+| DevOps | Docker, Docker Compose, Render, GitHub Actions |
+| Testing | Django test runner, coverage, k6 |
+| External services | OSRM routing API |
+
+## Project structure
+
+```
 cargo/
-├── manage.py
-├── requirements.txt
-├── README.md
+├── cargo_project/      # Django settings, root URLs, API router, API tests
+├── users/              # custom User model, auth, profile, roles, preferences, ensure_superuser command
+├── orders/             # order workflow, admin decisions, feedback
+├── cargo/              # cargo types, routes, addresses, contact form, OSRM map endpoints
+├── templates/          # base layout and page templates per app
+├── static/             # CSS themes and site-preferences.js
+├── docs/               # API reference, testing guide, admin checklist, Kazakh docs
+├── load-tests/         # k6 smoke scenario
 ├── Dockerfile
 ├── docker-compose.yml
-├── render.yaml
-├── cargo_project/        # Django project config
-├── users/                # auth/profile/roles
-├── orders/               # order workflow + feedback
-├── cargo/                # cargo types/routes/maps/contact
-├── templates/
-├── static/
-├── docs/                 # operational docs
-└── load-tests/           # k6 scenarios
+├── render.yaml         # Render blueprint
+├── requirements.txt
+└── setup.bat, run.bat, VENV_CREATE.bat   # Windows helper scripts
 ```
 
-## Local Setup
+## Getting started
 
-```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-py -3 -m pip install -r requirements.txt
-py -3 manage.py migrate
-py -3 manage.py createsuperuser
-py -3 manage.py runserver
+### Run locally
+
+```bash
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
 ```
 
-Main URLs:
+On Windows you can instead run `setup.bat` once (creates `venv`, installs dependencies, migrates, creates a superuser) and then `run.bat` to start the server.
 
-- Home: `http://127.0.0.1:8000/`
-- Admin: `http://127.0.0.1:8000/admin/`
-- Health: `http://127.0.0.1:8000/health/`
+| Page | URL |
+|------|-----|
+| Home | http://127.0.0.1:8000/ |
+| Admin | http://127.0.0.1:8000/admin/ |
+| API root | http://127.0.0.1:8000/api/ |
+| Health check | http://127.0.0.1:8000/health/ |
 
-## API
+### Run with Docker
 
-API routes are under `/api/`.
-
-- JWT: `/api/auth/token/`, `/api/auth/token/refresh/`
-- Profile: `/api/me/`
-- Orders: `/api/orders/`
-- Catalog: `/api/cargo-types/`, `/api/routes/`
-
-Detailed reference: `docs/API.md`.
-
-## Testing and Coverage
-
-```powershell
-py -3 manage.py test
-py -3 -m coverage run manage.py test
-py -3 -m coverage report
-```
-
-Detailed testing guide: `docs/TESTING.md`.
-
-## Docker
-
-Run locally with Docker:
-
-```powershell
+```bash
 docker compose up --build
 ```
 
-## CI/CD
+The `web` service applies migrations and starts the Django development server on http://localhost:8000 with the project directory mounted for live reload. Create an admin user with:
 
-GitHub Actions workflow is configured at `.github/workflows/ci.yml`:
-
-- dependency install
-- `manage.py check`
-- full test run
-- coverage report
-
-## Render Deployment
-
-Render blueprint is defined in `render.yaml`.
-
-Required env vars:
-
-- `DJANGO_SECRET_KEY`
-- `DJANGO_DEBUG=False`
-- `ALLOWED_HOSTS`
-
-Start command runs migrations and launches Gunicorn.
-
-## Monitoring and Logs
-
-- App health endpoint: `/health/`
-- Centralized logging configured in `cargo_project/settings.py`
-- Runtime logs are written to `logs/cargo.log` and console (Render logs)
-
-## Load Testing
-
-k6 smoke scenario:
-
-```powershell
-k6 run .\load-tests\k6-smoke.js
+```bash
+docker compose exec web python manage.py createsuperuser
 ```
 
-Use Render URL target:
+The standalone image (`docker build .`) runs in production mode: it migrates, runs `ensure_superuser`, collects static files and starts Gunicorn on port 8000.
 
-```powershell
-k6 run -e BASE_URL=https://your-service.onrender.com .\load-tests\k6-smoke.js
+### Deploy to Render
+
+`render.yaml` defines a web service that installs dependencies, collects static files, runs migrations and starts Gunicorn. `DJANGO_SECRET_KEY` is generated by Render. Note that the default database is SQLite, so data on Render's free plan is not persistent across deploys.
+
+## API
+
+All endpoints are under `/api/`:
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /api/auth/token/` | Obtain JWT access/refresh pair |
+| `POST /api/auth/token/refresh/` | Refresh access token |
+| `GET /api/me/` | Current user profile |
+| `/api/orders/` | Orders CRUD (users see their own orders; admins see all) |
+| `GET /api/cargo-types/` | Cargo types (read-only, public) |
+| `GET /api/routes/` | Routes (read-only, public) |
+
+See [docs/API.md](docs/API.md) for payloads and examples.
+
+## Testing
+
+```bash
+python manage.py test
+python -m coverage run manage.py test
+python -m coverage report
 ```
+
+Load test with [k6](https://k6.io):
+
+```bash
+k6 run load-tests/k6-smoke.js
+k6 run -e BASE_URL=https://your-service.onrender.com load-tests/k6-smoke.js
+```
+
+CI (`.github/workflows/ci.yml`) installs dependencies and runs `manage.py check`, the test suite and a coverage report on every push and pull request. More details: [docs/TESTING.md](docs/TESTING.md).
+
+## Environment variables
+
+Settings are read from the process environment (there is no `.env` loader).
+
+| Variable | Purpose |
+|----------|---------|
+| `DJANGO_SECRET_KEY` | Django secret key (required in production) |
+| `DJANGO_DEBUG` | `True` / `False` (defaults to `True`) |
+| `ALLOWED_HOSTS` | Comma-separated host names |
+| `CSRF_TRUSTED_ORIGINS` | Comma-separated trusted origins |
+| `SECURE_SSL_REDIRECT` | Redirect HTTP to HTTPS when `DEBUG` is off (defaults to `True`) |
+| `SECURE_HSTS_SECONDS` | HSTS max-age when `DEBUG` is off |
+| `DJANGO_LOG_LEVEL` | Root log level (defaults to `INFO`) |
+| `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL`, `DJANGO_SUPERUSER_PASSWORD` | Used by `manage.py ensure_superuser` |
+
+## Logging and monitoring
+
+- `GET /health/` returns `{"status": "ok"}`.
+- Logs go to the console and to `logs/cargo.log` (created automatically, not tracked in git).
+
+## Documentation
+
+- [API reference](docs/API.md)
+- [Testing guide](docs/TESTING.md)
+- [Admin panel checklist](docs/ADMIN_TODO.md) (Kazakh)
+- [Environment setup help](docs/ORTA_QOSU.md) (Kazakh)
+- [Project requirements checklist](docs/TALAPTAR.md) (Kazakh)
+
+## License
+
+Built for educational and portfolio purposes. No license file is included; all rights reserved by the author.
+
+---
+
+Author: cristiano8518
